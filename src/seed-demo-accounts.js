@@ -21,11 +21,16 @@ function makeUser({role, email, password, name, extra={}}) {
   return id;
 }
 
-/* Creates the admin account (required — the passcode gate logs into this)
-   plus the two demo accounts used throughout the test suite. Only runs if
-   the database is genuinely empty of users, so it's safe to call this on
-   every server start — a fresh deploy seeds itself automatically, and a
-   database that already has real accounts is never touched.
+/* Creates the admin account (required — the login gate needs one to exist)
+   on every fresh, empty database — a real deployment needs this regardless.
+   The two demo accounts (carrier@/shipper@loadmasr.eg, password demo1234)
+   are only created if SEED_DEMO_ACCOUNTS=true is explicitly set — useful
+   for local development and the test suite, but wrong for a real
+   deployment: those credentials are published in this project's own
+   README and test files, so anyone could log in as them on a live site.
+   Only runs at all if the database is genuinely empty, so it's safe to
+   call on every server start — an existing database with real accounts
+   is never touched.
 
    The admin password comes from ADMIN_SEED_PASSWORD if set — set this to
    a real secret before a deployment's first boot (Railway: Variables tab,
@@ -40,12 +45,16 @@ function seedDemoAccountsIfEmpty(){
   const adminPassword = process.env.ADMIN_SEED_PASSWORD || 'admin-seed-password';
   makeUser({role:'admin', email:'admin@loadmasr.eg', password:adminPassword, name:'LOAD MASR Admin',
     extra:{verified:1, verificationStatus:'APPROVED'}});
+
+  if (process.env.SEED_DEMO_ACCOUNTS !== 'true') {
+    return { seeded: true, demoAccountsCreated: false };
+  }
   const carrierId = makeUser({role:'carrier', email:'carrier@loadmasr.eg', password:'demo1234', name:'Hesham Freight',
     extra:{phone:'010 2233 4455', verified:1, plan:'Pro', verificationStatus:'APPROVED', nationalId:'', licenseNo:'', fleetCount:''}});
   const shipperId = makeUser({role:'shipper', email:'shipper@loadmasr.eg', password:'demo1234', name:'Nile Building Supplies',
     extra:{phone:'011 2233 4455', website:'https://nilebuildingsupplies.example', verified:1, plan:'Business',
            verificationStatus:'APPROVED', shipperTier:'Contract'}});
-  return { seeded: true, carrierId, shipperId };
+  return { seeded: true, demoAccountsCreated: true, carrierId, shipperId };
 }
 
 module.exports = { seedDemoAccountsIfEmpty, makeUser };

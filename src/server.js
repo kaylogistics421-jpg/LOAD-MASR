@@ -8,7 +8,11 @@ const { seedDemoAccountsIfEmpty } = require('./seed-demo-accounts');
 // accounts, automatically, once. An existing database with real accounts
 // is never touched.
 const seedResult = seedDemoAccountsIfEmpty();
-if (seedResult.seeded) console.log('First boot: seeded admin + demo accounts (admin@loadmasr.eg, carrier@loadmasr.eg, shipper@loadmasr.eg).');
+if (seedResult.seeded) {
+  console.log(seedResult.demoAccountsCreated
+    ? 'First boot: seeded admin + demo accounts (admin@loadmasr.eg, carrier@loadmasr.eg, shipper@loadmasr.eg).'
+    : 'First boot: seeded admin account only (admin@loadmasr.eg). Set SEED_DEMO_ACCOUNTS=true before first boot if you want the demo shipper/carrier accounts too.');
+}
 const { hashPassword, verifyPassword, createSession, getSessionUser, deleteSession } = require('./auth');
 const { saveDocument, getDocument, documentFilePath } = require('./documents');
 const { createRouter, ApiError } = require('./router');
