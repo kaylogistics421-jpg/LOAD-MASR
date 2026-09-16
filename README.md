@@ -107,6 +107,17 @@ I checked this codebase specifically for "is this actually secured," not just
   code change needed on this end.
 - **Passwords**: hashed with `scrypt` (a real, memory-hard algorithm),
   never stored in plaintext — this was already true before today.
+- **No demo accounts on a real deployment by default.** Earlier, the
+  seeded carrier/shipper demo accounts (password `demo1234`, published in
+  this README and the test files) were created automatically on every
+  fresh deploy — meaning anyone could log in as them on your live site.
+  They're now opt-in only: set `SEED_DEMO_ACCOUNTS=true` before first boot
+  if you actually want them (useful for a staging environment, or before
+  you're ready to onboard real users). Leave it unset for a real
+  deployment — only the admin account gets created. The frontend also no
+  longer ships with any hardcoded demo credentials in its own source —
+  they used to sit in plain sight in the page's JavaScript even after the
+  visible login hints were removed.
 
 **Still genuinely not done, be aware before you consider this fully
 hardened:**
