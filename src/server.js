@@ -509,18 +509,23 @@ function serveStatic(req, res) {
   const filePath = path.join(PUBLIC_DIR, urlPath);
   // Guard against path traversal outside the public directory.
   if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403); return res.end('Forbidden'); }
+  // No caching at all for the app shell — this is a single-page app
+  // whose only "static asset" IS the page itself, so a stale cached copy
+  // (browser or any proxy in between) means real code changes silently
+  // don't show up after a deploy, with no error to explain why.
+  const noCacheHeaders = { 'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0', 'Pragma': 'no-cache' };
   fs.readFile(filePath, (err, data) => {
     if (err) {
       // Not a real static asset — fall back to index.html so client-side
       // navigation/anchors still land on the app itself.
       return fs.readFile(path.join(PUBLIC_DIR, 'index.html'), (err2, indexData) => {
         if (err2) { res.writeHead(404); return res.end('Not found'); }
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.writeHead(200, { 'Content-Type': 'text/html', ...noCacheHeaders });
         res.end(indexData);
       });
     }
     const ext = path.extname(filePath);
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', ...noCacheHeaders });
     res.end(data);
   });
 }
