@@ -1,0 +1,12 @@
+{
+  "name": "loadmasr-backend",
+  "version": "0.1.0",
+  "description": "Real backend for LOAD MASR — SQLite database, session auth, and file storage. Zero external dependencies (built on Node's native http, crypto, and experimental sqlite modules) so it runs anywhere Node 22+ runs, no npm install required.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node test/api.test.js"
+  },
+  "engines": { "node": ">=22.5.0" },
+  "license": "UNLICENSED"
+}
