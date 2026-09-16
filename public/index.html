@@ -687,7 +687,6 @@
           <div class="auth-msg" id="carrierLoginMsg"></div>
           <button type="button" id="carrierLoginSubmit" class="btn-primary" data-i18n="auth.login" style="width:100%;">Log in</button>
         </div>
-        <div class="auth-hint"><span data-i18n="auth.demo">Demo account:</span> <span class="code-badge">carrier@loadmasr.eg</span> / <span class="code-badge">demo1234</span></div>
       </div>
     </div>
   </div>
@@ -970,7 +969,6 @@
           <div class="auth-msg" id="shipperLoginMsg"></div>
           <button type="button" id="shipperLoginSubmit" class="btn-primary" data-i18n="auth.login" style="width:100%;">Log in</button>
         </div>
-        <div class="auth-hint"><span data-i18n="auth.demo">Demo account:</span> <span class="code-badge">shipper@loadmasr.eg</span> / <span class="code-badge">demo1234</span></div>
       </div>
     </div>
   </div>
@@ -1464,7 +1462,7 @@ const TRANSLATIONS = {
     "auth.login": "Log in", "auth.signup": "Sign up", "auth.email": "Email", "auth.password": "Password",
     "auth.name.carrier": "Carrier or driver name", "auth.name.shipper": "Shipper or company name",
     "auth.phone": "Phone", "auth.website": "Company website (optional)", "auth.createPassword": "Create a password",
-    "auth.demo": "Demo account:", "auth.createAccount": "Create account",
+    "auth.createAccount": "Create account",
     "auth.carrier.hero.title": "Join Egypt's fastest-growing freight network",
     "auth.carrier.hero.sub": "Real road-routing DH in KM, multi-tab search, and instant load matching — built for Egyptian carriers and dispatchers.",
     "auth.shipper.hero.title": "Post loads. Get matched. Get moving.",
@@ -1728,7 +1726,7 @@ const TRANSLATIONS = {
     "auth.login": "تسجيل الدخول", "auth.signup": "إنشاء حساب", "auth.email": "البريد الإلكتروني", "auth.password": "كلمة المرور",
     "auth.name.carrier": "اسم الناقل أو السائق", "auth.name.shipper": "اسم الشاحن أو الشركة",
     "auth.phone": "رقم الهاتف", "auth.website": "الموقع الإلكتروني للشركة (اختياري)", "auth.createPassword": "أنشئ كلمة مرور",
-    "auth.demo": "حساب تجريبي:", "auth.createAccount": "إنشاء الحساب",
+    "auth.createAccount": "إنشاء الحساب",
     "auth.carrier.hero.title": "انضم إلى أسرع شبكة شحن نمواً في مصر",
     "auth.carrier.hero.sub": "حساب انحراف حقيقي بالكيلومتر عبر الطرق الفعلية، بحث متعدد التبويبات، ومطابقة فورية للحمولات — مصمم للناقلين والموزعين المصريين.",
     "auth.shipper.hero.title": "انشر حمولاتك. اعثر على مطابقة. ابدأ الشحن.",
@@ -5161,15 +5159,17 @@ loadForm.addEventListener("keydown", (e)=>{ if(e.key==="Enter"){ e.preventDefaul
 let adminIdCounter = 8900;
 function nextAdminId(){ adminIdCounter += 1; return `USR-${adminIdCounter}`; }
 
+/* Starts empty — real accounts are mirrored in here from the backend the
+   moment someone actually logs in or signs up (see
+   mirrorServerUserLocally()). This used to ship with hardcoded demo
+   accounts, including plaintext passwords, sitting directly in this
+   public file — fine for a pure client-side demo, but not once real
+   accounts and a real backend are involved: anyone could read this
+   file's source and see working credentials for accounts that were never
+   theirs. */
 const USERS = {
-  carrier: {
-    'carrier@loadmasr.eg': {id:'USR-0001', password:'demo1234', name:'Hesham Freight', phone:'010 2233 4455', verified:true, plan:'Pro', verificationStatus:'APPROVED', submittedAt: minsAgo(60*24*30), nationalId:'', licenseNo:'', fleetCount:'', truckCategories:[], docFileName:''},
-    'm.hassan@nileexpress.com': {id:'USR-8902', password:'demo1234', name:'Nile Express Transport', managerName:'Mahmoud Hassan', phone:'+201119876543', verified:true, plan:'Pro (30-day free trial)', isFreeTrialPro:true, trialEndsAt: Date.now()+30*24*60*60*1000, verificationStatus:'PENDING', submittedAt: minsAgo(105), nationalId:'29809151201991', licenseNo:'LIC-77401', fleetCount:'12', truckCategories:['Farsh','Jumbo'], docFileName:'national_id_license.pdf'}
-  },
-  shipper: {
-    'shipper@loadmasr.eg': {id:'USR-0002', password:'demo1234', name:'Nile Building Supplies', phone:'011 2233 4455', website:'https://nilebuildingsupplies.example', verified:true, plan:'Business', isPioneerShipper:false, verificationStatus:'APPROVED', submittedAt: minsAgo(60*24*30), trn:'', sijill:'', docFileName:'', shipperTier:'Contract'},
-    'contact@elsweedy.eg': {id:'USR-8901', password:'demo1234', name:'El Sweedy Industrial Cables', contactPerson:'Ahmed El Sweedy', phone:'+201001234567', website:'', isPioneerShipper:true, verified:true, plan:'Founding Shipper (Free)', verificationStatus:'PENDING', submittedAt: minsAgo(150), trn:'123456789', sijill:'CR-99201', docFileName:'sijill_tijari_scan.pdf', shipperTier:'Spot'}
-  }
+  carrier: {},
+  shipper: {}
 };
 const CONTRACTED_LANES = [
   {origin:"Cairo", dest:"Alexandria", rate:1350},
