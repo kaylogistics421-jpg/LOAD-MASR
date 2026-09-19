@@ -37,12 +37,7 @@ function getSessionUser(token) {
     db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
     return null;
   }
-  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(session.user_id);
-  // A suspended account's existing session is rejected immediately, not
-  // just blocked from a future login — suspending someone mid-session
-  // should actually cut them off right away.
-  if (user && user.account_status === 'SUSPENDED') return null;
-  return user;
+  return db.prepare('SELECT * FROM users WHERE id = ?').get(session.user_id);
 }
 
 function deleteSession(token) {

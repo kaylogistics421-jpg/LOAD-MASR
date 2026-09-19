@@ -146,12 +146,16 @@ async function run() {
   r = await api('POST', `/api/loads/${loadId}/pod/approve`, { token: shipperToken });
   check('shipper can approve POD', r.status === 200);
   check('load status auto-completes', r.json.load.status === 'Completed');
-  // Only carrier + dispatcher invoices auto-generate now — the shipper
-  // side is deliberately manual (shipper selects delivered loads and
-  // generates one consolidated invoice themselves; that endpoint isn't
-  // built yet, so it's not exercised here — see the README's gap list).
-  check('2 invoices generated automatically (carrier/dispatcher only)', r.json.invoices.length === 2);
-  check('no shipper invoice was auto-generated', !r.json.invoices.some(i => i.role === 'shipper'));
+  check('3 invoices generated (shipper/carrier/dispatcher)', r.json.invoices.length === 3);
+
+  const shipperInv = r.json.invoices.find(i => i.role === 'shipper');
+  // rate=1000, tolls=200 (manually reported at POD) — no accessorial/handling
+  // fee and no platform service fee anymore.
+  // VAT applies to the rate only (1000), tolls (200) added after, untaxed
+  // shipperSubtotal = 1000, vat 14% = 140, total = 1000+140+200 = 1340
+  check('shipper invoice total is correct (1340 EGP)', shipperInv.amount === 1340);
+  check('Contract-tier shipper gets 7-day due date (not immediate)', shipperInv.due_date > shipperInv.issue_date + 6 * 24 * 60 * 60 * 1000);
+  check('settlement starts as Pending Payment', shipperInv.settlement_status === 'Pending Payment');
 
   const carrierInv = r.json.invoices.find(i => i.role === 'carrier');
   // dispatchFee = 8% of 1000 = 80, platformCommission = 5% of 1000 = 50,
@@ -162,20 +166,6 @@ async function run() {
   check('dispatcher commission is correct (80 EGP, unaffected by tolls)', dispatcherInv.amount === 80);
 
   console.log('\n=== SETTLEMENT / ESCROW FLOW ===');
-  // The settlement/receipt/admin-confirm endpoints are still fully real
-  // and functional — they just aren't triggered automatically by POD
-  // approval anymore. Seed a shipper invoice directly (matching the old
-  // auto-generated shape) to keep exercising those endpoints for real,
-  // rather than skip this coverage entirely.
-  const shipperInvId = `inv_${require('crypto').randomBytes(4).toString('hex')}`;
-  const now = Date.now();
-  db.prepare(`
-    INSERT INTO invoices (id, invoice_no, load_id, role, party_name, party_phone, party_email, amount, breakdown_json,
-                           payment_terms, issue_date, due_date, status, settlement_status)
-    VALUES (?, ?, ?, 'shipper', 'Test Shipper Co', '0100000000', ?, 1340, '{}', 'Net 7 Bank Transfer (post-POD)', ?, ?, 'Pending', 'Pending Payment')
-  `).run(shipperInvId, `INV-TEST-${shipperInvId}`, loadId, shipperEmail, now, now + 7*24*60*60*1000);
-  const shipperInv = { id: shipperInvId, amount: 1340 };
-
   r = await api('GET', '/api/invoices/mine', { token: shipperToken });
   check('shipper sees their invoice in billing', r.json.invoices.some(i => i.id === shipperInv.id));
 

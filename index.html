@@ -623,7 +623,7 @@
 <div class="flagbar"><span class="r"></span><span class="w"></span><span class="b"></span></div>
 
 <div class="pioneer-banner" id="pioneerBanner">
-  <span id="pioneerBannerText">🚀 Founding Shipper Offer: Limited free spots for 100% FREE unlimited load postings!</span>
+  <span id="pioneerBannerText">🚀 Founding Shipper Offer: The first 3 registered shippers get 100% FREE unlimited load postings!</span>
   <button type="button" id="pioneerBannerCta" data-i18n="pricing.claim">Claim your spot</button>
   <button type="button" id="pioneerBannerClose" aria-label="Dismiss">✕</button>
 </div>
@@ -718,7 +718,6 @@
       <button class="nav-item active" data-view="dashboard">🏠 <span data-i18n="sidebar.dashboard">Dashboard</span></button>
       <button class="nav-item" data-view="search">🔎 <span data-i18n="sidebar.searchLoads">Search Loads</span></button>
       <button class="nav-item" data-view="mine">🚚 <span data-i18n="sidebar.myTrucks">My Trucks</span></button>
-      <button class="nav-item" data-view="operations">📋 <span data-i18n="sidebar.operations">My Shipments</span></button>
       <button class="nav-item" data-view="tools">🛠 <span data-i18n="sidebar.tools">Tools</span></button>
       <button class="nav-item" data-view="billing">🧾 <span data-i18n="sidebar.billing">Billing &amp; Invoices</span></button>
     </nav>
@@ -858,56 +857,6 @@
       </div>
     </div>
 
-    <div class="app-view" data-view-panel="operations">
-      <div class="sec-head"><div><h2 style="margin-bottom:2px;" data-i18n="ops.title">My Shipments</h2><p class="sec-desc" data-i18n="ops.sub">Shipments you've taken on directly — log one, assign a driver, and track the cash advance automatically instead of by hand.</p></div></div>
-
-      <div class="sec-head" style="margin-top:8px;"><div><h2 style="margin-bottom:2px;font-size:1.1rem;" data-i18n="ops.driversTitle">Drivers</h2></div></div>
-      <div class="grid3" style="align-items:end;margin-bottom:16px;">
-        <div class="field"><label for="opsDriverName" data-i18n="ops.driverName">Driver name</label><input type="text" id="opsDriverName" placeholder="e.g. Mahmoud Fathy"></div>
-        <div class="field"><label for="opsDriverPhone" data-i18n="ops.driverPhone">Phone (optional)</label><input type="text" id="opsDriverPhone" placeholder="01xxxxxxxxx"></div>
-        <div class="field"><button type="button" class="btn-primary" id="opsAddDriverBtn" data-i18n="ops.addDriver">Add driver</button></div>
-      </div>
-      <div class="board-scroll" style="margin-bottom:32px;">
-        <table class="dense">
-          <thead><tr><th data-i18n="ops.driverName">Driver</th><th data-i18n="ops.driverPhone">Phone</th><th data-i18n="col.status">Status</th><th></th></tr></thead>
-          <tbody id="opsDriversBody"></tbody>
-        </table>
-      </div>
-
-      <div class="sec-head"><div><h2 style="margin-bottom:2px;font-size:1.1rem;" data-i18n="ops.logTitle">Log a shipment</h2><p class="sec-desc" data-i18n="ops.logSub">From the factory email, phone call, or however it came in.</p></div></div>
-      <div class="grid3">
-        <div class="field"><label for="opsShipperName" data-i18n="ops.shipperName">Shipper / factory name</label><input type="text" id="opsShipperName" placeholder="e.g. Al-Nasr Steel Factory"></div>
-        <div class="field"><label for="opsShipperPhone" data-i18n="ops.shipperPhone">Their phone (optional)</label><input type="text" id="opsShipperPhone"></div>
-        <div class="field"><label for="opsDriverSelect" data-i18n="ops.assignDriver">Assign driver</label><select id="opsDriverSelect"><option value="">—</option></select></div>
-      </div>
-      <div class="grid3">
-        <div class="field"><label for="opsOrigin" data-i18n="post.origin">Origin</label><input type="text" id="opsOrigin" placeholder="e.g. 6th of October"></div>
-        <div class="field"><label for="opsDest" data-i18n="post.dest">Destination</label><input type="text" id="opsDest" placeholder="e.g. Port Said"></div>
-        <div class="field"><label for="opsPickupDate" data-i18n="post.pickupDate">Pickup date</label><input type="date" id="opsPickupDate"></div>
-      </div>
-      <div class="grid3">
-        <div class="field"><label for="opsCargo" data-i18n="post.cargoType">Cargo</label><input type="text" id="opsCargo" placeholder="e.g. Steel coils, 20 tons"></div>
-        <div class="field"><label for="opsRate" data-i18n="ops.rate">Rate — what the shipper owes you (EGP)</label><input type="number" id="opsRate" placeholder="e.g. 18000"></div>
-        <div class="field"><label for="opsAdvance" data-i18n="ops.advance">Cash advance given to driver (EGP)</label><input type="number" id="opsAdvance" placeholder="e.g. 1500"></div>
-      </div>
-      <div class="form-actions">
-        <button type="button" id="opsLogShipmentBtn" class="btn-primary" data-i18n="ops.logShipment">Log shipment</button>
-        <span class="form-msg" id="opsLogMsg"></span>
-      </div>
-
-      <div class="sec-head" style="margin-top:32px;"><div><h2 style="margin-bottom:2px;font-size:1.1rem;" data-i18n="ops.shipmentsTitle">Shipments</h2></div></div>
-      <div class="board-scroll">
-        <table class="dense">
-          <thead><tr>
-            <th data-i18n="ops.shipperName">Shipper</th><th data-i18n="req.lane">Route</th><th data-i18n="ops.driverName">Driver</th>
-            <th data-i18n="ops.rate">Rate</th><th data-i18n="ops.advance">Advance</th><th data-i18n="ops.actualTolls">Actual tolls</th>
-            <th data-i18n="ops.balance">Driver balance</th><th data-i18n="col.status">Status</th><th data-i18n="ops.documents">Documents</th><th></th>
-          </tr></thead>
-          <tbody id="opsShipmentsBody"></tbody>
-        </table>
-      </div>
-    </div>
-
     <!-- Placeholders -->
     <div class="app-view" data-view-panel="billing">
       <div class="sec-head"><div><h2 style="margin-bottom:2px;" data-i18n="billing.title">Billing &amp; Invoices</h2><p class="sec-desc" data-i18n="billing.sub">Statements are generated automatically once a load is marked Completed.</p></div></div>
@@ -975,7 +924,7 @@
         <h2 style="margin-bottom:16px;" data-i18n="support.title">Support &amp; FAQ</h2>
         <div class="faq-item"><div class="faq-q" data-i18n="support.q1">How do I post a truck or load?</div><div class="faq-a" data-i18n="support.a1">Go to My Trucks or My Loads in the sidebar and use the form at the bottom of the page.</div></div>
         <div class="faq-item"><div class="faq-q" data-i18n="support.q2">How is DH (deadhead) calculated?</div><div class="faq-a" data-i18n="support.a2">By default it's a straight-line estimate. Add a free TomTom API key in Tools for real road-routed DH in km.</div></div>
-        <div class="faq-item"><div class="faq-q" data-i18n="support.q3">How does the Founding Shipper program work?</div><div class="faq-a" data-i18n="support.a3">A limited number of registered shippers get free lifetime posting — claim your spot from the banner at the top of the site.</div></div>
+        <div class="faq-item"><div class="faq-q" data-i18n="support.q3">How does the Founding Shipper program work?</div><div class="faq-a" data-i18n="support.a3">The first 3 registered shippers get free lifetime posting — claim your spot from the banner at the top of the site.</div></div>
         <p class="sec-desc" style="margin-top:18px;" data-i18n="support.contact">Still need help? Email support@loadmasr.eg.</p>
       </div>
     </div>
@@ -992,7 +941,7 @@
           <h3 data-i18n="auth.shipper.hero.title">Post loads. Get matched. Get moving.</h3>
           <p class="auth-hero-sub" data-i18n="auth.shipper.hero.sub">Auto-bound company profile, real drive-time estimates, and admin-verified carriers across all 27 governorates.</p>
           <div class="auth-stat-grid">
-            <div class="auth-stat"><div class="as-num nums" id="authHeroPioneerSlots">Limited</div><div class="as-lbl" data-i18n="auth.stat.pioneerSlots">Founding Shipper spots left</div></div>
+            <div class="auth-stat"><div class="as-num nums" id="authHeroPioneerSlots">3</div><div class="as-lbl" data-i18n="auth.stat.pioneerSlots">Founding Shipper spots left</div></div>
             <div class="auth-stat"><div class="as-num">27</div><div class="as-lbl" data-i18n="auth.stat.governorates">Governorates covered</div></div>
             <div class="auth-stat"><div class="as-num">FREE</div><div class="as-lbl" data-i18n="auth.stat.free">Lifetime posting for pioneers</div></div>
             <div class="auth-stat"><div class="as-num">✓</div><div class="as-lbl" data-i18n="auth.stat.verified">Admin document verification</div></div>
@@ -1033,7 +982,6 @@
       <p class="sec-desc" data-i18n="pricing.shipper.sub">Your account is created — choose a plan to activate it and get onto the board.</p>
     </div>
     <div class="pricing-grid cols-3" id="shipperPricingGrid"></div>
-    <div id="shipperFeeStatusPanel" style="display:none;max-width:520px;margin:28px auto 0;"></div>
   </div>
 </section>
 
@@ -1163,7 +1111,7 @@
               <input type="text" id="lDestArea" list="lDestAreaList" placeholder="Area / city (optional)" style="margin-top:8px;">
               <datalist id="lDestAreaList"></datalist>
             </div>
-            <div class="field"><label for="lCargo" data-i18n="post.cargoType">Cargo type</label><input type="text" id="lCargo" data-i18n-placeholder="post.cargoPlaceholder" placeholder="e.g. Steel beams, 6m long"></div>
+            <div class="field"><label for="lCargo" data-i18n="post.cargoType">Cargo type</label><select id="lCargo"></select></div>
           </div>
           <div class="grid3">
             <div class="field"><label for="lEquip" data-i18n="post.equipRequired">Equipment type required</label><select id="lEquip"></select></div>
@@ -1290,7 +1238,7 @@
         <h2 style="margin-bottom:16px;" data-i18n="support.title">Support &amp; FAQ</h2>
         <div class="faq-item"><div class="faq-q" data-i18n="support.q1">How do I post a truck or load?</div><div class="faq-a" data-i18n="support.a1">Go to My Trucks or My Loads in the sidebar and use the form at the bottom of the page.</div></div>
         <div class="faq-item"><div class="faq-q" data-i18n="support.q2">How is DH (deadhead) calculated?</div><div class="faq-a" data-i18n="support.a2">By default it's a straight-line estimate. Add a free TomTom API key in Tools for real road-routed DH in km.</div></div>
-        <div class="faq-item"><div class="faq-q" data-i18n="support.q3">How does the Founding Shipper program work?</div><div class="faq-a" data-i18n="support.a3">A limited number of registered shippers get free lifetime posting — claim your spot from the banner at the top of the site.</div></div>
+        <div class="faq-item"><div class="faq-q" data-i18n="support.q3">How does the Founding Shipper program work?</div><div class="faq-a" data-i18n="support.a3">The first 3 registered shippers get free lifetime posting — claim your spot from the banner at the top of the site.</div></div>
         <p class="sec-desc" style="margin-top:18px;" data-i18n="support.contact">Still need help? Email support@loadmasr.eg.</p>
       </div>
     </div>
@@ -1362,16 +1310,6 @@
         </table>
       </div>
 
-      <div class="sec-head" style="margin-top:40px;"><div><h2 style="margin-bottom:2px;" data-i18n="admin.feeVerifTitle">Access Fee Payments</h2><p class="sec-desc" data-i18n="admin.feeVerifSub">Real InstaPay receipts from shippers, awaiting your confirmation.</p></div></div>
-      <div class="board-scroll">
-        <table class="dense">
-          <thead><tr>
-            <th data-i18n="billing.invoiceNo">Invoice #</th><th data-i18n="billing.party">Party</th><th data-i18n="col.rate">Amount</th><th data-i18n="admin.document">Document</th><th></th>
-          </tr></thead>
-          <tbody id="adminFeeVerifBody"></tbody>
-        </table>
-      </div>
-
       <div class="sec-head" style="margin-top:40px;">
         <div><h2 style="margin-bottom:2px;" data-i18n="admin.allLoadsTitle">All Loads</h2><p class="sec-desc" data-i18n="admin.allLoadsSub">Every load posted on the platform, across every shipper.</p></div>
         <div class="dash-card" style="padding:12px 18px;"><div class="dc-lbl" data-i18n="admin.total">TOTAL</div><div class="dc-num nums" id="admLoadsTotal">0</div></div>
@@ -1380,7 +1318,7 @@
         <table class="dense">
           <thead><tr>
             <th data-i18n="col.trip">Trip</th><th data-i18n="req.lane">Route</th><th data-i18n="search.cargo">Cargo</th><th data-i18n="col.equip">Equip</th>
-            <th data-i18n="col.company">Company</th><th data-i18n="col.rate">Rate</th><th data-i18n="col.status">Status</th><th data-i18n="col.available">Posted</th><th></th>
+            <th data-i18n="col.company">Company</th><th data-i18n="col.rate">Rate</th><th data-i18n="col.status">Status</th><th data-i18n="col.available">Posted</th>
           </tr></thead>
           <tbody id="adminAllLoadsBody"></tbody>
         </table>
@@ -1394,55 +1332,11 @@
         <table class="dense">
           <thead><tr>
             <th data-i18n="col.trip">Trip</th><th data-i18n="req.lane">Route</th><th data-i18n="col.equip">Equip</th>
-            <th data-i18n="col.company">Company</th><th data-i18n="col.status">Status</th><th data-i18n="col.available">Available</th><th></th>
+            <th data-i18n="col.company">Company</th><th data-i18n="col.status">Status</th><th data-i18n="col.available">Available</th>
           </tr></thead>
           <tbody id="adminAllTrucksBody"></tbody>
         </table>
       </div>
-
-      <div class="sec-head" style="margin-top:40px;">
-        <div><h2 style="margin-bottom:2px;" data-i18n="admin.allUsersTitle">All Users</h2><p class="sec-desc" data-i18n="admin.allUsersSub">Every account on the platform — suspend, reactivate, or remove.</p></div>
-        <div class="dash-card" style="padding:12px 18px;"><div class="dc-lbl" data-i18n="admin.total">TOTAL</div><div class="dc-num nums" id="admUsersTotal">0</div></div>
-      </div>
-      <div class="board-scroll">
-        <table class="dense">
-          <thead><tr>
-            <th data-i18n="admin.entity">Entity / Company</th><th data-i18n="admin.role">Role</th><th data-i18n="col.status">Status</th><th></th>
-          </tr></thead>
-          <tbody id="adminAllUsersBody"></tbody>
-        </table>
-      </div>
-
-      <div class="sec-head" style="margin-top:40px;">
-        <div><h2 style="margin-bottom:2px;" data-i18n="admin.negotiationsTitle">Negotiations</h2><p class="sec-desc" data-i18n="admin.negotiationsSub">Every offer thread on the platform, both parties named.</p></div>
-        <div class="dash-card" style="padding:12px 18px;"><div class="dc-lbl" data-i18n="admin.total">TOTAL</div><div class="dc-num nums" id="admNegsTotal">0</div></div>
-      </div>
-      <div class="board-scroll">
-        <table class="dense">
-          <thead><tr>
-            <th data-i18n="admin.shipperCol">Shipper</th><th data-i18n="admin.carrierCol">Carrier</th><th data-i18n="col.rate">Latest offer</th><th data-i18n="col.status">Status</th><th></th>
-          </tr></thead>
-          <tbody id="adminAllNegsBody"></tbody>
-        </table>
-      </div>
-
-      <div class="sec-head" style="margin-top:40px;">
-        <div><h2 style="margin-bottom:2px;" data-i18n="admin.allInvoicesTitle">All Invoices</h2><p class="sec-desc" data-i18n="admin.allInvoicesSub">Every invoice on the platform — shipment and access-fee alike.</p></div>
-        <div class="dash-card" style="padding:12px 18px;"><div class="dc-lbl" data-i18n="admin.total">TOTAL</div><div class="dc-num nums" id="admInvoicesTotal">0</div></div>
-      </div>
-      <div class="board-scroll">
-        <table class="dense">
-          <thead><tr>
-            <th data-i18n="billing.invoiceNo">Invoice #</th><th data-i18n="billing.party">Party</th><th data-i18n="admin.role">Type</th><th data-i18n="col.rate">Amount</th><th data-i18n="col.status">Status</th><th></th>
-          </tr></thead>
-          <tbody id="adminAllInvoicesBody"></tbody>
-        </table>
-      </div>
-
-      <div class="sec-head" style="margin-top:40px;">
-        <div><h2 style="margin-bottom:2px;" data-i18n="admin.settingsTitle">Site Settings</h2><p class="sec-desc" data-i18n="admin.settingsSub">Platform-wide settings — no code changes needed.</p></div>
-      </div>
-      <div id="adminSettingsPanel" style="max-width:520px;"></div>
     </div>
   </section>
 </div>
@@ -1583,33 +1477,11 @@ const TRANSLATIONS = {
     "auth.shipper.wizardCta": "🌟 Become a Founding Shipper (free lifetime posting)",
     "pricing.carrier.title": "Find the right carrier plan", "pricing.carrier.sub": "Your account is created — choose a plan to activate it and get onto the board.",
     "pricing.shipper.title": "Find the right shipper plan", "pricing.shipper.sub": "Your account is created — choose a plan to activate it and get onto the board.",
-    "fee.pendingTitle": "Account pending", "fee.pendingBody": "Our team will set your access fee shortly — check back soon.",
-    "fee.verifyingTitle": "Receipt received", "fee.verifyingBody": "Your payment is being verified — this usually doesn't take long.",
-    "fee.amountDue": "Amount due", "fee.instructions": "Payment instructions", "fee.payBody": "Pay via InstaPay using the instructions above, then upload your receipt below.",
-    "fee.chooseReceipt": "Choose a receipt image or PDF", "fee.submitReceipt": "Submit receipt", "fee.receiptRequired": "Please choose a receipt file first.",
-    "fee.receiptSubmittedToast": "Receipt submitted — awaiting confirmation.",
     "pricing.billing.monthly": "Monthly billing", "pricing.billing.annual": "Annual billing (save)",
     "pricing.popular": "Most popular", "pricing.limited": "Limited offer",
     "pricing.choose": "Choose", "pricing.claim": "Claim your spot",
     "sidebar.dashboard": "Dashboard", "sidebar.searchLoads": "Search Loads", "sidebar.searchTrucks": "Search Trucks",
-    "sidebar.myTrucks": "My Trucks", "sidebar.myLoads": "My Loads", "sidebar.operations": "My Shipments",
-    "ops.title": "My Shipments", "ops.sub": "Shipments you've taken on directly — log one, assign a driver, and track the cash advance automatically instead of by hand.",
-    "ops.driversTitle": "Drivers", "ops.driverName": "Driver name", "ops.driverPhone": "Phone", "ops.addDriver": "Add driver",
-    "ops.logTitle": "Log a shipment", "ops.logSub": "From the factory email, phone call, or however it came in.",
-    "ops.shipperName": "Shipper / factory name", "ops.shipperPhone": "Their phone (optional)", "ops.assignDriver": "Assign driver",
-    "ops.rate": "Rate", "ops.advance": "Advance", "ops.actualTolls": "Actual tolls", "ops.balance": "Driver balance",
-    "ops.logShipment": "Log shipment", "ops.shipmentsTitle": "Shipments",
-    "ops.markInTransit": "Mark In Transit", "ops.markDelivered": "Record delivery", "ops.markSettled": "Mark Settled",
-    "ops.recordTollsTitle": "Record delivery", "ops.recordTollsSub": "Enter what the driver actually spent on tolls — the balance is calculated automatically.",
-    "ops.confirm": "Confirm", "ops.driverOwes": "Driver owes back", "ops.carrierOwes": "You owe the driver",
-    "ops.noDriver": "No driver assigned", "ops.pending": "Not recorded yet", "ops.active": "Active", "ops.inactive": "Inactive",
-    "ops.deactivate": "Deactivate", "ops.reactivate": "Reactivate", "ops.nameRequired": "Enter a driver name.",
-    "ops.shipmentLogged": "Shipment logged.", "ops.fillRequired": "Fill in the shipper name and route first.",
-    "ops.documents": "Documents", "ops.shipperDoc": "Shipper document", "ops.driverSettlement": "Driver settlement",
-    "ops.shipperDocTitle": "Shipment Document", "ops.driverSettlementTitle": "Driver Settlement",
-    "ops.tripRef": "Trip reference", "ops.date": "Date", "ops.amountDue": "Amount due", "ops.print": "Print",
-    "ops.advanceGiven": "Advance given", "ops.tollsSpent": "Tolls spent", "ops.close": "Close",
-    "status.Assigned": "Assigned", "status.InTransit": "In Transit", "status.Delivered": "Delivered", "status.Settled": "Settled",
+    "sidebar.myTrucks": "My Trucks", "sidebar.myLoads": "My Loads",
     "sidebar.tools": "Tools", "sidebar.notifications": "Notifications", "sidebar.chat": "Chat", "sidebar.tracking": "Tracking",
     "chat.title": "Chat", "chat.sub": "Every rate negotiation, in one place — organized by load number.",
     "chat.empty": "No active negotiations yet — offers and counter-offers will show up here.",
@@ -1654,7 +1526,7 @@ const TRANSLATIONS = {
     "admin.allLoadsTitle": "All Loads", "admin.allLoadsSub": "Every load posted on the platform, across every shipper.",
     "admin.allTrucksTitle": "All Trucks", "admin.allTrucksSub": "Every truck posted on the platform, across every carrier.", "admin.total": "TOTAL",
     "admin.allLoadsEmpty": "No loads posted on the platform yet.", "admin.allTrucksEmpty": "No trucks posted on the platform yet.",
-    "admin.approve": "Approve", "admin.reject": "Reject", "admin.viewDoc": "View doc", "admin.setFee": "Set Fee",
+    "admin.approve": "Approve", "admin.reject": "Reject", "admin.viewDoc": "View doc",
     "wiz.step.invite": "Invite Code", "wiz.step.company": "Company Info", "wiz.step.verification": "Verification", "wiz.step.active": "Active",
     "cwiz.step.fleet": "Fleet Identity", "cwiz.step.equip": "Equipment & Ops", "cwiz.step.legal": "Legal Credentials", "cwiz.step.dispatch": "Dispatch Activated",
     "wiz.applyCode": "Apply code", "wiz.submitVerification": "Submit for verification",
@@ -1678,8 +1550,7 @@ const TRANSLATIONS = {
     "offer.fillRequired": "Add a truck empty date, your truck's location, and your rate.",
     "offer.send": "Send offer", "offer.sentToast": "Offer sent — waiting for the shipper to respond.",
     "offer.busyNotice": "Another carrier already has an offer pending on this load.",
-    "post.equipType": "Equipment type", "post.cargoType": "Cargo type", "post.cargoPlaceholder": "e.g. Steel beams, 6m long",
-    "post.cargoRequired": "Describe the cargo.",
+    "post.equipType": "Equipment type", "post.cargoType": "Cargo type",
     "post.capacity": "Capacity / truck length", "post.availDate": "Available date",
     "post.offeredRate": "Offered rate (optional, EGP)", "post.rateRequired": "Rate (required, EGP)",
     "post.rateRequiredMsg": "Contract-tier loads need a fixed rate — add one to continue.",
@@ -1688,8 +1559,7 @@ const TRANSLATIONS = {
     "myLoads.title": "My loads", "myLoads.sub": "Everything you've posted. Filter, or remove a listing once it's covered.",
     "admin.entity": "Entity / Company", "admin.role": "Role", "admin.regTax": "Reg / Tax details", "admin.submitted": "Submitted", "admin.document": "Document",
     "admin.sub": "Review Commercial Registers (Sijill Tijari), Tax Cards, and IDs submitted through the registration wizards.",
-    "pioneer.banner": "🚀 Founding Shipper Offer: Limited free spots for 100% FREE unlimited load postings!",
-    "pioneer.limitedLabel": "Limited",
+    "pioneer.banner": "🚀 Founding Shipper Offer: The first {n} registered shipper{s} get 100% FREE unlimited load postings!",
     "common.signedInAs": "Signed in as", "common.plan": "plan", "trend.sinceArrived": "since you arrived", "trend.noChange": "No change",
     "search.matching": "matching", "wiz.driverName": "Driver name", "wiz.driverPhone": "Driver phone (with country code)",
     "noun.trucks": "trucks", "noun.loads": "loads",
@@ -1703,7 +1573,7 @@ const TRANSLATIONS = {
     "support.title": "Support & FAQ", "support.q1": "How do I post a truck or load?",
     "support.a1": "Go to My Trucks or My Loads in the sidebar and use the form at the bottom of the page.",
     "support.q2": "How is DH (deadhead) calculated?", "support.a2": "By default it's a straight-line estimate. Add a free TomTom API key in Tools for real road-routed DH in km.",
-    "support.q3": "How does the Founding Shipper program work?", "support.a3": "A limited number of registered shippers get free lifetime posting — claim your spot from the banner at the top of the site.",
+    "support.q3": "How does the Founding Shipper program work?", "support.a3": "The first 3 registered shippers get free lifetime posting — claim your spot from the banner at the top of the site.",
     "support.contact": "Still need help? Email support@loadmasr.eg.",
 
     "wiz.companyName": "Company name", "wiz.contactPerson": "Contact person", "wiz.whatsapp": "Official mobile / WhatsApp",
@@ -1804,15 +1674,6 @@ const TRANSLATIONS = {
     "settle.confirmAllInBatch": "Confirm All in Batch",
     "settle.markedSettled": "Invoice marked as settled.", "settle.receiptSubmittedToast": "Receipt submitted for verification.",
     "admin.paymentVerifSub": "Shipper bank transfer receipts awaiting confirmation.",
-    "admin.feeVerifTitle": "Access Fee Payments", "admin.feeVerifSub": "Real InstaPay receipts from shippers, awaiting your confirmation.",
-    "admin.allUsersTitle": "All Users", "admin.allUsersSub": "Every account on the platform — suspend, reactivate, or remove.",
-    "admin.negotiationsTitle": "Negotiations", "admin.negotiationsSub": "Every offer thread on the platform, both parties named.",
-    "admin.shipperCol": "Shipper", "admin.carrierCol": "Carrier",
-    "admin.allInvoicesTitle": "All Invoices", "admin.allInvoicesSub": "Every invoice on the platform — shipment and access-fee alike.",
-    "admin.settingsTitle": "Site Settings", "admin.settingsSub": "Platform-wide settings — no code changes needed.",
-    "admin.suspend": "Suspend", "admin.reactivate": "Reactivate", "admin.delete": "Delete", "admin.cancel": "Cancel",
-    "admin.markPaid": "Mark Paid", "admin.viewProfile": "View", "admin.suspended": "Suspended", "admin.active": "Active",
-    "admin.confirmDelete": "Are you sure? This permanently removes this record.",
     "driver.title": "Delivery Status", "driver.arrivedPickup": "Arrived at Pickup", "driver.loadedTransit": "Loaded & In Transit", "driver.arrivedDropoff": "Arrived at Dropoff",
     "driver.uploadPod": "Upload Signed BOL / Receipt", "driver.podUploaded": "POD submitted — thank you!", "driver.linkInvalid": "This driver link isn't valid or has expired.",
     "driver.copyLink": "Copy Driver Link", "driver.linkCopied": "Driver link copied — send it to the driver via WhatsApp or SMS.",
@@ -1880,33 +1741,11 @@ const TRANSLATIONS = {
     "auth.shipper.wizardCta": "🌟 كن شاحناً مؤسساً (نشر مجاني مدى الحياة)",
     "pricing.carrier.title": "اختر باقة الناقل المناسبة", "pricing.carrier.sub": "تم إنشاء حسابك — اختر باقة لتفعيله والانضمام إلى اللوحة.",
     "pricing.shipper.title": "اختر باقة الشاحن المناسبة", "pricing.shipper.sub": "تم إنشاء حسابك — اختر باقة لتفعيله والانضمام إلى اللوحة.",
-    "fee.pendingTitle": "الحساب قيد الانتظار", "fee.pendingBody": "سيحدد فريقنا رسوم اشتراكك قريبًا — تحقق مرة أخرى بعد قليل.",
-    "fee.verifyingTitle": "تم استلام الإيصال", "fee.verifyingBody": "جاري التحقق من الدفع — عادة لا يستغرق هذا وقتًا طويلاً.",
-    "fee.amountDue": "المبلغ المستحق", "fee.instructions": "تعليمات الدفع", "fee.payBody": "ادفع عبر إنستاباي باستخدام التعليمات أعلاه، ثم ارفع إيصالك أدناه.",
-    "fee.chooseReceipt": "اختر صورة الإيصال أو ملف PDF", "fee.submitReceipt": "إرسال الإيصال", "fee.receiptRequired": "الرجاء اختيار ملف الإيصال أولاً.",
-    "fee.receiptSubmittedToast": "تم إرسال الإيصال — بانتظار التأكيد.",
     "pricing.billing.monthly": "فوترة شهرية", "pricing.billing.annual": "فوترة سنوية (وفّر)",
     "pricing.popular": "الأكثر شيوعاً", "pricing.limited": "عرض محدود",
     "pricing.choose": "اختر", "pricing.claim": "احجز مقعدك",
     "sidebar.dashboard": "لوحة التحكم", "sidebar.searchLoads": "بحث عن حمولات", "sidebar.searchTrucks": "بحث عن شاحنات",
-    "sidebar.myTrucks": "شاحناتي", "sidebar.myLoads": "حمولاتي", "sidebar.operations": "شحناتي",
-    "ops.title": "شحناتي", "ops.sub": "الشحنات التي تعاملت معها مباشرة — سجّلها، وكّل سائقًا، وتابع العربون تلقائيًا بدلاً من يدويًا.",
-    "ops.driversTitle": "السائقون", "ops.driverName": "اسم السائق", "ops.driverPhone": "الهاتف", "ops.addDriver": "إضافة سائق",
-    "ops.logTitle": "تسجيل شحنة", "ops.logSub": "من إيميل المصنع، مكالمة هاتفية، أو أيًا كانت الطريقة.",
-    "ops.shipperName": "اسم الشاحن / المصنع", "ops.shipperPhone": "هاتفهم (اختياري)", "ops.assignDriver": "تعيين سائق",
-    "ops.rate": "السعر", "ops.advance": "العربون", "ops.actualTolls": "الرسوم الفعلية", "ops.balance": "رصيد السائق",
-    "ops.logShipment": "تسجيل الشحنة", "ops.shipmentsTitle": "الشحنات",
-    "ops.markInTransit": "تحديد في الطريق", "ops.markDelivered": "تسجيل التسليم", "ops.markSettled": "تحديد كمُسوّى",
-    "ops.recordTollsTitle": "تسجيل التسليم", "ops.recordTollsSub": "أدخل ما أنفقه السائق فعليًا على الرسوم — يتم حساب الرصيد تلقائيًا.",
-    "ops.confirm": "تأكيد", "ops.driverOwes": "السائق مدين بـ", "ops.carrierOwes": "أنت مدين للسائق بـ",
-    "ops.noDriver": "لم يتم تعيين سائق", "ops.pending": "لم يُسجَّل بعد", "ops.active": "نشط", "ops.inactive": "غير نشط",
-    "ops.deactivate": "إلغاء التفعيل", "ops.reactivate": "إعادة التفعيل", "ops.nameRequired": "أدخل اسم السائق.",
-    "ops.shipmentLogged": "تم تسجيل الشحنة.", "ops.fillRequired": "أدخل اسم الشاحن والمسار أولاً.",
-    "ops.documents": "المستندات", "ops.shipperDoc": "مستند الشاحن", "ops.driverSettlement": "تسوية السائق",
-    "ops.shipperDocTitle": "مستند الشحنة", "ops.driverSettlementTitle": "تسوية السائق",
-    "ops.tripRef": "رقم الرحلة", "ops.date": "التاريخ", "ops.amountDue": "المبلغ المستحق", "ops.print": "طباعة",
-    "ops.advanceGiven": "العربون المُعطى", "ops.tollsSpent": "الرسوم المصروفة", "ops.close": "إغلاق",
-    "status.Assigned": "معيّن", "status.InTransit": "في الطريق", "status.Delivered": "تم التسليم", "status.Settled": "مُسوّى",
+    "sidebar.myTrucks": "شاحناتي", "sidebar.myLoads": "حمولاتي",
     "sidebar.tools": "الأدوات", "sidebar.notifications": "الإشعارات", "sidebar.chat": "المحادثات", "sidebar.tracking": "التتبع",
     "chat.title": "المحادثات", "chat.sub": "كل مفاوضة على السعر، في مكان واحد — منظمة حسب رقم الحمولة.",
     "chat.empty": "لا توجد مفاوضات نشطة بعد — ستظهر هنا العروض والعروض المضادة.",
@@ -1951,7 +1790,7 @@ const TRANSLATIONS = {
     "admin.allLoadsTitle": "كل الحمولات", "admin.allLoadsSub": "كل حمولة تم نشرها على المنصة، من كل الشاحنين.",
     "admin.allTrucksTitle": "كل الشاحنات", "admin.allTrucksSub": "كل شاحنة تم نشرها على المنصة، من كل الناقلين.", "admin.total": "الإجمالي",
     "admin.allLoadsEmpty": "لا توجد حمولات منشورة على المنصة حتى الآن.", "admin.allTrucksEmpty": "لا توجد شاحنات منشورة على المنصة حتى الآن.",
-    "admin.approve": "اعتماد", "admin.reject": "رفض", "admin.viewDoc": "عرض المستند", "admin.setFee": "تحديد الرسوم",
+    "admin.approve": "اعتماد", "admin.reject": "رفض", "admin.viewDoc": "عرض المستند",
     "wiz.step.invite": "كود الدعوة", "wiz.step.company": "بيانات الشركة", "wiz.step.verification": "التحقق", "wiz.step.active": "نشط",
     "cwiz.step.fleet": "هوية الأسطول", "cwiz.step.equip": "المعدات والعمليات", "cwiz.step.legal": "المستندات القانونية", "cwiz.step.dispatch": "تم التفعيل",
     "wiz.applyCode": "تطبيق الكود", "wiz.submitVerification": "إرسال للتحقق",
@@ -1975,8 +1814,7 @@ const TRANSLATIONS = {
     "offer.fillRequired": "أضف تاريخ فراغ الشاحنة وموقعها وسعرك.",
     "offer.send": "إرسال العرض", "offer.sentToast": "تم إرسال العرض — بانتظار رد الشاحن.",
     "offer.busyNotice": "يوجد بالفعل عرض معلّق من ناقل آخر على هذه الحمولة.",
-    "post.equipType": "نوع المعدات", "post.cargoType": "نوع البضاعة", "post.cargoPlaceholder": "مثال: عوارض حديد، طول 6 متر",
-    "post.cargoRequired": "صِف البضاعة.",
+    "post.equipType": "نوع المعدات", "post.cargoType": "نوع البضاعة",
     "post.capacity": "السعة / طول الشاحنة", "post.availDate": "تاريخ التوفر",
     "post.offeredRate": "السعر المعروض (اختياري، جنيه)", "post.rateRequired": "السعر (مطلوب، جنيه)",
     "post.rateRequiredMsg": "حمولات الفئة التعاقدية تحتاج سعراً ثابتاً — أضف سعراً للمتابعة.",
@@ -1985,8 +1823,7 @@ const TRANSLATIONS = {
     "myLoads.title": "حمولاتي", "myLoads.sub": "كل ما نشرته. صفِّ النتائج، أو أزل إعلاناً بعد تغطيته.",
     "admin.entity": "الجهة / الشركة", "admin.role": "الدور", "admin.regTax": "بيانات السجل / الضريبة", "admin.submitted": "تاريخ التقديم", "admin.document": "المستند",
     "admin.sub": "راجع السجلات التجارية والبطاقات الضريبية والهويات المقدمة عبر معالجات التسجيل.",
-    "pioneer.banner": "🚀 عرض الشاحن المؤسس: عدد محدود من الأماكن المجانية للنشر غير المحدود بنسبة 100%!",
-    "pioneer.limitedLabel": "محدود",
+    "pioneer.banner": "🚀 عرض الشاحن المؤسس: أول {n} شاحن مسجل يحصل على نشر مجاني غير محدود بنسبة 100%!",
     "common.signedInAs": "مسجل الدخول باسم", "common.plan": "باقة", "trend.sinceArrived": "منذ وصولك", "trend.noChange": "لا تغيير",
     "search.matching": "مطابقة", "wiz.driverName": "اسم السائق", "wiz.driverPhone": "هاتف السائق (مع كود الدولة)",
     "noun.trucks": "شاحنة", "noun.loads": "حمولة",
@@ -2000,7 +1837,7 @@ const TRANSLATIONS = {
     "support.title": "الدعم والأسئلة الشائعة", "support.q1": "كيف أنشر شاحنة أو حمولة؟",
     "support.a1": "اذهب إلى شاحناتي أو حمولاتي في القائمة الجانبية واستخدم النموذج أسفل الصفحة.",
     "support.q2": "كيف يُحسب الانحراف (DH)؟", "support.a2": "افتراضياً هو تقدير بخط مستقيم. أضف مفتاح TomTom مجاني في الأدوات لحساب انحراف حقيقي عبر الطرق بالكيلومتر.",
-    "support.q3": "كيف يعمل برنامج الشاحن المؤسس؟", "support.a3": "عدد محدود من الشاحنين المسجلين يحصلون على نشر مجاني مدى الحياة — احجز مقعدك من البانر أعلى الموقع.",
+    "support.q3": "كيف يعمل برنامج الشاحن المؤسس؟", "support.a3": "أول 3 شاحنين مسجلين يحصلون على نشر مجاني مدى الحياة — احجز مقعدك من البانر أعلى الموقع.",
     "support.contact": "ما زلت بحاجة للمساعدة؟ راسلنا على support@loadmasr.eg.",
 
     "wiz.companyName": "اسم الشركة", "wiz.contactPerson": "الشخص المسؤول", "wiz.whatsapp": "الهاتف الرسمي / واتساب",
@@ -2101,15 +1938,6 @@ const TRANSLATIONS = {
     "settle.confirmAllInBatch": "تأكيد كل الدفعة",
     "settle.markedSettled": "تم تعليم الفاتورة كمسواة.", "settle.receiptSubmittedToast": "تم إرسال الإيصال للتحقق.",
     "admin.paymentVerifSub": "إيصالات التحويل البنكي من الشاحنين بانتظار التأكيد.",
-    "admin.feeVerifTitle": "مدفوعات رسوم الاشتراك", "admin.feeVerifSub": "إيصالات إنستاباي حقيقية من الشاحنين، بانتظار تأكيدك.",
-    "admin.allUsersTitle": "كل المستخدمين", "admin.allUsersSub": "كل حساب على المنصة — علّق أو فعّل أو احذف.",
-    "admin.negotiationsTitle": "المفاوضات", "admin.negotiationsSub": "كل محادثة عرض على المنصة، مع اسم الطرفين.",
-    "admin.shipperCol": "الشاحن", "admin.carrierCol": "الناقل",
-    "admin.allInvoicesTitle": "كل الفواتير", "admin.allInvoicesSub": "كل فاتورة على المنصة — فواتير الشحن ورسوم الاشتراك.",
-    "admin.settingsTitle": "إعدادات الموقع", "admin.settingsSub": "إعدادات على مستوى المنصة — بدون تغييرات برمجية.",
-    "admin.suspend": "تعليق", "admin.reactivate": "تفعيل", "admin.delete": "حذف", "admin.cancel": "إلغاء",
-    "admin.markPaid": "وضع كمدفوع", "admin.viewProfile": "عرض", "admin.suspended": "معلّق", "admin.active": "نشط",
-    "admin.confirmDelete": "هل أنت متأكد؟ سيؤدي هذا لحذف هذا السجل نهائيًا.",
     "driver.title": "حالة التسليم", "driver.arrivedPickup": "وصل لنقطة الاستلام", "driver.loadedTransit": "تم التحميل وفي الطريق", "driver.arrivedDropoff": "وصل لنقطة التسليم",
     "driver.uploadPod": "رفع بوليصة الشحن الموقّعة / الإيصال", "driver.podUploaded": "تم إرسال إثبات التسليم — شكراً لك!", "driver.linkInvalid": "رابط السائق هذا غير صالح أو منتهي الصلاحية.",
     "driver.copyLink": "نسخ رابط السائق", "driver.linkCopied": "تم نسخ رابط السائق — أرسله للسائق عبر واتساب أو رسالة نصية.",
@@ -3140,11 +2968,10 @@ function wireTrackingControls(container, l, viewerRole, onChange){
   const copyLinkBtn = container.querySelector(`[data-copy-driver-link="${l.id}"]`);
   if(copyLinkBtn) copyLinkBtn.addEventListener('click', ()=> copyDriverLink(l.id));
   const advanceBtn = container.querySelector(`[data-advance-stage="${l.id}"]`);
-  if(advanceBtn) advanceBtn.addEventListener('click', async ()=>{
+  if(advanceBtn) advanceBtn.addEventListener('click', ()=>{
     const idx = TRACK_STAGES.indexOf(l.trackingStage);
     l.trackingStage = TRACK_STAGES[idx+1];
     l._trackingLastActivityAt = Date.now();
-    if(l._serverId){ try{ await api.updateTracking(l.id, l.trackingStage); }catch(e){ console.warn('Tracking update failed to save to server:', e.message); } }
     showToast(`${i18n('track.title')}: ${i18n(TRACK_STAGE_KEY[l.trackingStage])}`);
     logActivity('shipper', `🚚 ${i18n(TRACK_STAGE_KEY[l.trackingStage])} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
     logActivity('carrier', `🚚 ${i18n(TRACK_STAGE_KEY[l.trackingStage])} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
@@ -3168,19 +2995,13 @@ function wireTrackingControls(container, l, viewerRole, onChange){
     wireDropzone(`podDropzone-${l.id}`, `podFile-${l.id}`, `podFileName-${l.id}`, (f)=>{ l._pendingPodFileName = f ? f.name : ""; l._pendingPodFile = f || null; });
   }
   const submitPodBtn = container.querySelector(`[data-submit-pod="${l.id}"]`);
-  if(submitPodBtn) submitPodBtn.addEventListener('click', async ()=>{
+  if(submitPodBtn) submitPodBtn.addEventListener('click', ()=>{
     l.podFileName = l._pendingPodFileName || "";
     l.podFile = l._pendingPodFile || null;
     l.podStatus = "Uploaded";
     const tollsInput = container.querySelector(`#podTolls-${l.id}`);
     l.tolls = tollsInput && tollsInput.value ? parseInt(tollsInput.value, 10) : 0;
     l._trackingLastActivityAt = Date.now();
-    if(l._serverId && l.podFile){
-      try{
-        const base64Data = await fileToBase64(l.podFile);
-        await api.uploadPod(l.id, l.podFile.name, l.podFile.type, base64Data, l.tolls);
-      }catch(e){ console.warn('POD upload failed to save to server:', e.message); }
-    }
     showToast(i18n('track.pod.submittedToast'));
     logActivity('shipper', `📎 ${i18n('track.pod.submittedToast')} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
     logActivity('carrier', `📎 ${i18n('track.pod.submittedToast')} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
@@ -3188,10 +3009,9 @@ function wireTrackingControls(container, l, viewerRole, onChange){
     onChange();
   });
   const approveBtn = container.querySelector(`[data-approve-pod="${l.id}"]`);
-  if(approveBtn) approveBtn.addEventListener('click', async ()=>{
+  if(approveBtn) approveBtn.addEventListener('click', ()=>{
     l.podStatus = "Approved";
     l._trackingLastActivityAt = Date.now();
-    if(l._serverId){ try{ await api.approvePod(l.id); }catch(e){ console.warn('POD approval failed to save to server:', e.message); } }
     showToast(i18n('track.pod.approvedToast'));
     logActivity('carrier', `✅ ${i18n('track.pod.approvedToast')} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
     logActivity('shipper', `✅ ${i18n('track.pod.approvedToast')} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
@@ -3228,7 +3048,7 @@ function openReportIssueModal(l, onChange){
   `;
   openModal(html);
   document.getElementById("issueCancelBtn").addEventListener("click", closeModal);
-  document.getElementById("issueSubmitBtn").addEventListener("click", async ()=>{
+  document.getElementById("issueSubmitBtn").addEventListener("click", ()=>{
     const type = document.getElementById("issueType").value;
     const note = document.getElementById("issueNote").value.trim();
     const attachFile = document.getElementById("issueAttach").files[0];
@@ -3237,7 +3057,6 @@ function openReportIssueModal(l, onChange){
       messages: [{by:"carrier", note, attachmentName: attachFile ? attachFile.name : "", at: Date.now()}]
     };
     l._trackingLastActivityAt = Date.now();
-    if(l._serverId){ try{ await api.reportException(l.id, type, note); }catch(e){ console.warn('Exception report failed to save to server:', e.message); } }
     showToast(i18n('track.issueReported'));
     logActivity('shipper', `⚠️ ${i18n(TRACK_STAGE_KEY[l.trackingStage]||'')} ${i18n('track.exception.'+type)} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
     logActivity('carrier', `⚠️ ${i18n(TRACK_STAGE_KEY[l.trackingStage]||'')} ${i18n('track.exception.'+type)} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
@@ -3263,7 +3082,7 @@ function openDisputePodModal(l, onChange){
   `;
   openModal(html);
   document.getElementById("podDisputeCancelBtn").addEventListener("click", closeModal);
-  document.getElementById("podDisputeConfirmBtn").addEventListener("click", async ()=>{
+  document.getElementById("podDisputeConfirmBtn").addEventListener("click", ()=>{
     const reason = document.getElementById("podDisputeReason").value.trim();
     if(!reason){ showToast(i18n('track.pod.disputeReasonRequired'), "err"); return; }
     const attachFile = document.getElementById("podDisputeAttach").files[0];
@@ -3273,7 +3092,6 @@ function openDisputePodModal(l, onChange){
       status: "Open",
       messages: [{by:"shipper", note: reason, attachmentName: attachFile ? attachFile.name : "", at: Date.now()}]
     };
-    if(l._serverId){ try{ await api.disputePod(l.id, reason); }catch(e){ console.warn('POD dispute failed to save to server:', e.message); } }
     showToast(i18n('track.pod.disputedToast'));
     logActivity('carrier', `⚠ ${i18n('track.pod.disputedToast')} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`);
     logActivity('shipper', `⚠ ${i18n('track.pod.disputedToast')} — ${laneLabel(l.origin,l.originArea)} ▸ ${laneLabel(l.dest,l.destArea)}`, {sound:true});
@@ -3380,13 +3198,12 @@ function loadOfferHtml(l, viewerRole){
 }
 function wireLoadOfferControls(container, l, viewerRole, onChange){
   const acceptBtn = container.querySelector(`[data-accept-offer="${l.id}"]`);
-  if(acceptBtn) acceptBtn.addEventListener('click', async ()=>{
+  if(acceptBtn) acceptBtn.addEventListener('click', ()=>{
     l.offer.status = "Accepted";
     l.status = "Pending";
     l.rate = l.offer.offers[l.offer.offers.length-1].price;
     l.trackingStage = l.trackingStage || "Booked";
     l.bookedByCarrierEmail = l.offer.carrierEmail;
-    if(l._negotiationId){ try{ await api.negotiationAccept(l._negotiationId); }catch(e){ console.warn('Accept failed to save to server:', e.message); } }
     showToast(i18n('bid.accepted'));
     logActivity('shipper', `🎉 ${i18n('bid.accepted')} — ${l.company} (${i18n('col.trip')} ${l.tripNo})`, {sound:true});
     logActivity('carrier', `🎉 ${i18n('bid.accepted')} — ${l.company} (${i18n('col.trip')} ${l.tripNo})`, {sound:true});
@@ -3394,25 +3211,23 @@ function wireLoadOfferControls(container, l, viewerRole, onChange){
     onChange();
   });
   const rejectBtn = container.querySelector(`[data-reject-offer="${l.id}"]`);
-  if(rejectBtn) rejectBtn.addEventListener('click', async ()=>{
+  if(rejectBtn) rejectBtn.addEventListener('click', ()=>{
     // Rejecting a number doesn't end the conversation — it declines that
     // offer and moves straight into "now propose your own price" instead
     // of closing the thread and forcing a fresh request from scratch.
     l.offer.declinedBy = viewerRole;
-    if(l._negotiationId){ try{ await api.negotiationDecline(l._negotiationId); }catch(e){ console.warn('Decline failed to save to server:', e.message); } }
     showToast(i18n('bid.rejectedStayOpenToast'));
     logActivity('shipper', `⚠ ${i18n('bid.rejectedStayOpenToast')} — ${l.company} (${i18n('col.trip')} ${l.tripNo})`, {sound:true});
     logActivity('carrier', `⚠ ${i18n('bid.rejectedStayOpenToast')} — ${l.company} (${i18n('col.trip')} ${l.tripNo})`, {sound:true});
     onChange();
   });
   const counterBtn = container.querySelector(`[data-counter-offer="${l.id}"]`);
-  if(counterBtn) counterBtn.addEventListener('click', async ()=>{
+  if(counterBtn) counterBtn.addEventListener('click', ()=>{
     const input = container.querySelector(`#offCounterPrice-${l.id}`);
     const price = parseInt(input.value, 10);
     if(!price){ showToast(i18n('bid.enterPrice'), 'err'); return; }
     l.offer.offers.push({by: viewerRole, price, note:"", at: Date.now()});
     l.offer.declinedBy = null;
-    if(l._negotiationId){ try{ await api.negotiationOffer(l._negotiationId, price, ""); }catch(e){ console.warn('Counter failed to save to server:', e.message); } }
     showToast(i18n('bid.counterSentToast'));
     logActivity('shipper', `💬 ${i18n('bid.counterSentToast')} — ${l.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${l.tripNo})`, {sound:true});
     logActivity('carrier', `💬 ${i18n('bid.counterSentToast')} — ${l.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${l.tripNo})`, {sound:true});
@@ -3580,7 +3395,7 @@ function openTruckRequestModal(t){
   openModal(html);
   fillSelect(document.getElementById("reqCargo"), CARGO_TYPES, false, null, "cargo");
   document.getElementById("reqCancelBtn").addEventListener("click", closeModal);
-  document.getElementById("reqSendBtn").addEventListener("click", async (e)=>{
+  document.getElementById("reqSendBtn").addEventListener("click", (e)=>{
     const pickupDate = document.getElementById("reqPickupDate").value;
     const pickupTimeFrom = document.getElementById("reqPickupTimeFrom").value;
     const pickupTimeTo = document.getElementById("reqPickupTimeTo").value;
@@ -3606,26 +3421,20 @@ function openTruckRequestModal(t){
     const btn = e.currentTarget;
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span>${i18n('toast.sending')}`;
-    t.negotiation = {
-      shipperEmail: shipperAuth.email, shipperName: shipperAuth.name, shipperPhone: (USERS.shipper[shipperAuth.email]||{}).phone||"",
-      pickupDate, pickupTimeFrom, pickupTimeTo, deliveryDateFrom, deliveryDateTo, deliveryTimeFrom, deliveryTimeTo,
-      pickupGov, pickupArea, deliveryGov, deliveryArea, cargo, weight, dimensions,
-      status: "Pending",
-      offers: [{by:"shipper", price, note, at: Date.now()}]
-    };
-    try{
-      const res = await api.postNegotiation({
-        targetType:'truck', targetId: t.id, price, note,
+    setTimeout(()=>{
+      t.negotiation = {
+        shipperEmail: shipperAuth.email, shipperName: shipperAuth.name, shipperPhone: (USERS.shipper[shipperAuth.email]||{}).phone||"",
         pickupDate, pickupTimeFrom, pickupTimeTo, deliveryDateFrom, deliveryDateTo, deliveryTimeFrom, deliveryTimeTo,
-        pickupGov, pickupArea, deliveryGov, deliveryArea, cargo, weight, dimensions
-      });
-      t._negotiationId = res.negotiation.id;
-    }catch(err){ console.warn('Truck request posted locally but failed to save to the server:', err.message); }
-    closeModal();
-    showToast(`${i18n('toast.requestSentTo')} ${t.company} — ${i18n('bid.offerSentToast')}`);
-    logActivity('shipper', `✅ ${i18n('bid.offerSentToast')} — ${t.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${t.tripNo})`, {sound:true});
-    logActivity('carrier', `📩 ${i18n('bid.newOfferReceived')} — ${t.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${t.tripNo})`, {sound:true});
-    renderTruckData();
+        pickupGov, pickupArea, deliveryGov, deliveryArea, cargo, weight, dimensions,
+        status: "Pending",
+        offers: [{by:"shipper", price, note, at: Date.now()}]
+      };
+      closeModal();
+      showToast(`${i18n('toast.requestSentTo')} ${t.company} — ${i18n('bid.offerSentToast')}`);
+      logActivity('shipper', `✅ ${i18n('bid.offerSentToast')} — ${t.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${t.tripNo})`, {sound:true});
+      logActivity('carrier', `📩 ${i18n('bid.newOfferReceived')} — ${t.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${t.tripNo})`, {sound:true});
+      renderTruckData();
+    }, 650);
   });
 }
 
@@ -3695,7 +3504,7 @@ function negotiationHtml(t, viewerRole){
 }
 function wireNegotiationControls(container, t, viewerRole, onChange){
   const acceptBtn = container.querySelector(`[data-accept-bid="${t.id}"]`);
-  if(acceptBtn) acceptBtn.addEventListener('click', async ()=>{
+  if(acceptBtn) acceptBtn.addEventListener('click', ()=>{
     t.negotiation.status = "Accepted";
     t.status = "Pending";
     t.rate = t.negotiation.offers[t.negotiation.offers.length-1].price;
@@ -3720,15 +3529,6 @@ function wireNegotiationControls(container, t, viewerRole, onChange){
     };
     loads.unshift(newLoad);
     t.negotiation.linkedLoadId = newLoad.id;
-    if(t._negotiationId){
-      try{
-        const res = await api.negotiationAccept(t._negotiationId);
-        // The server creates its OWN real, persisted load for this deal —
-        // reconcile the locally-built one to that real id so it's the
-        // same record other sessions (and this one, after a refresh) see.
-        if(res.linkedLoadId){ newLoad.id = res.linkedLoadId; newLoad._serverId = res.linkedLoadId; t.negotiation.linkedLoadId = res.linkedLoadId; }
-      }catch(e){ console.warn('Accept failed to save to server:', e.message); }
-    }
     showToast(i18n('bid.accepted'));
     logActivity('shipper', `🎉 ${i18n('bid.accepted')} — ${t.company} (${i18n('col.trip')} ${t.tripNo})`, {sound:true});
     logActivity('carrier', `🎉 ${i18n('bid.accepted')} — ${t.company} (${i18n('col.trip')} ${t.tripNo})`, {sound:true});
@@ -3737,109 +3537,25 @@ function wireNegotiationControls(container, t, viewerRole, onChange){
     onChange();
   });
   const rejectBtn = container.querySelector(`[data-reject-bid="${t.id}"]`);
-  if(rejectBtn) rejectBtn.addEventListener('click', async ()=>{
+  if(rejectBtn) rejectBtn.addEventListener('click', ()=>{
     t.negotiation.declinedBy = viewerRole;
-    if(t._negotiationId){ try{ await api.negotiationDecline(t._negotiationId); }catch(e){ console.warn('Decline failed to save to server:', e.message); } }
     showToast(i18n('bid.rejectedStayOpenToast'));
     logActivity('shipper', `⚠ ${i18n('bid.rejectedStayOpenToast')} — ${t.company} (${i18n('col.trip')} ${t.tripNo})`, {sound:true});
     logActivity('carrier', `⚠ ${i18n('bid.rejectedStayOpenToast')} — ${t.company} (${i18n('col.trip')} ${t.tripNo})`, {sound:true});
     onChange();
   });
   const counterBtn = container.querySelector(`[data-counter-bid="${t.id}"]`);
-  if(counterBtn) counterBtn.addEventListener('click', async ()=>{
+  if(counterBtn) counterBtn.addEventListener('click', ()=>{
     const input = container.querySelector(`#negCounterPrice-${t.id}`);
     const price = parseInt(input.value, 10);
     if(!price){ showToast(i18n('bid.enterPrice'), 'err'); return; }
     t.negotiation.offers.push({by: viewerRole, price, note:"", at: Date.now()});
     t.negotiation.declinedBy = null;
-    if(t._negotiationId){ try{ await api.negotiationOffer(t._negotiationId, price, ""); }catch(e){ console.warn('Counter failed to save to server:', e.message); } }
     showToast(i18n('bid.counterSentToast'));
     logActivity('shipper', `💬 ${i18n('bid.counterSentToast')} — ${t.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${t.tripNo})`, {sound:true});
     logActivity('carrier', `💬 ${i18n('bid.counterSentToast')} — ${t.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${t.tripNo})`, {sound:true});
     onChange();
   });
-}
-
-/* Converts one server negotiation row into the shape the existing
-   negotiation UI (negotiationHtml, wireNegotiationControls,
-   wireLoadOfferControls) already expects, and merges it onto the local
-   load/truck object — this is what makes the OTHER party's real offers,
-   countering, and accept/decline actually show up, not just whatever
-   happened locally in this one session. */
-function mergeNegotiationFromServer(entity, targetType, neg){
-  if(!neg) return;
-  entity._negotiationId = neg.id;
-  const offers = JSON.parse(neg.offers_json || '[]');
-  if(targetType === 'truck'){
-    entity.negotiation = {
-      shipperEmail: entity.negotiation?.shipperEmail, shipperName: entity.negotiation?.shipperName, shipperPhone: entity.negotiation?.shipperPhone,
-      pickupDate: neg.pickup_date, pickupTimeFrom: neg.pickup_time_from, pickupTimeTo: neg.pickup_time_to,
-      deliveryDateFrom: neg.delivery_date_from, deliveryDateTo: neg.delivery_date_to,
-      deliveryTimeFrom: neg.delivery_time_from, deliveryTimeTo: neg.delivery_time_to,
-      pickupGov: neg.pickup_gov, pickupArea: neg.pickup_area, deliveryGov: neg.delivery_gov, deliveryArea: neg.delivery_area,
-      cargo: neg.cargo, weight: neg.weight, dimensions: neg.dimensions,
-      status: neg.status === 'Accepted' ? 'Accepted' : 'Pending',
-      declinedBy: neg.declined_by, offers, linkedLoadId: neg.linked_load_id || entity.negotiation?.linkedLoadId
-    };
-  } else {
-    entity.offer = {
-      carrierEmail: entity.offer?.carrierEmail, carrierName: entity.offer?.carrierName, carrierPhone: entity.offer?.carrierPhone,
-      status: neg.status === 'Accepted' ? 'Accepted' : 'Pending',
-      declinedBy: neg.declined_by, offers
-    };
-  }
-}
-async function syncNegotiationFromServer(entity, targetType){
-  try{
-    const res = await api.getNegotiation(targetType, entity.id);
-    if(res.negotiation) mergeNegotiationFromServer(entity, targetType, res.negotiation);
-  }catch(e){ /* not logged in yet, or nothing to sync — fine, use local state */ }
-}
-/* Pulls every negotiation the current user is a party to, in one call, and
-   merges each onto its matching local load/truck — this is what lets the
-   Chat tab show real, fresh threads the instant it's opened, not only
-   after a detail panel happened to sync that one specific negotiation. */
-async function syncAllMyNegotiations(role){
-  try{
-    const res = await api.myNegotiations();
-    res.negotiations.forEach(neg=>{
-      const arr = neg.target_type === 'load' ? loads : trucks;
-      const entity = arr.find(e => e.id === neg.target_id);
-      if(entity) mergeNegotiationFromServer(entity, neg.target_type, neg);
-    });
-  }catch(e){ console.warn('Could not sync negotiations from server:', e.message); }
-}
-
-function fileToBase64(file){
-  return new Promise((resolve, reject)=>{
-    const reader = new FileReader();
-    reader.onload = ()=> resolve(reader.result.split(',')[1]); // strip the data: URL prefix
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-/* Merges the server's real tracking/exception/POD fields onto a local
-   load — same idea as mergeNegotiationFromServer, for the same reason:
-   the OTHER party's stage updates, exception reports, and POD actions
-   happened in a different session and need to actually show up here. */
-function mergeTrackingFromServer(l, r){
-  l.trackingStage = r.tracking_stage; l.driverName = r.driver_name; l.driverPhone = r.driver_phone;
-  l.podStatus = r.pod_status; l.podDisputeReason = r.pod_dispute_reason; l.tolls = r.tolls || 0;
-  l.status = r.status; l.invoicesGenerated = !!r.invoices_generated;
-  if(r.exception_type){
-    // The backend only models a single current exception (not a full
-    // back-and-forth thread yet) — represent it the same shape the
-    // existing exception-chat UI expects, as a one-message thread.
-    l.exception = { type: r.exception_type, status: 'Open', messages: [{by:'carrier', note: r.exception_note||'', attachmentName:'', at: r.exception_at}] };
-  } else {
-    l.exception = null;
-  }
-}
-async function syncTrackingFromServer(l){
-  try{
-    const res = await api.getLoad(l.id);
-    if(res && res.load) mergeTrackingFromServer(l, res.load);
-  }catch(e){ /* not logged in yet, or nothing to sync — fine, use local state */ }
 }
 
 function toggleTruckDetailRow(tr, t, viewerRole){
@@ -3854,19 +3570,8 @@ function toggleTruckDetailRow(tr, t, viewerRole){
   if(openRow) openRow.remove();
   const dTr = document.createElement('tr');
   dTr.className = 'detail-row';
-  tr.after(dTr);
-  renderTruckDetailInto(dTr, tr, t, viewerRole);
-  // Pull the real, current negotiation state from the server in the
-  // background — this is what surfaces the OTHER party's offers/countering
-  // since those never happened in this browser session. This ONLY rebuilds
-  // the row's own content (not a full toggle), so it can't re-trigger
-  // itself into a loop.
-  syncNegotiationFromServer(t, 'truck').then(()=>{
-    if(dTr.isConnected) renderTruckDetailInto(dTr, tr, t, viewerRole);
-  });
-}
-function renderTruckDetailInto(dTr, tr, t, viewerRole){
   dTr.innerHTML = `<td colspan="12">${truckDetailHtml(t, viewerRole)}</td>`;
+  tr.after(dTr);
   dTr.querySelector('.detail-close').addEventListener('click', (e)=>{ e.stopPropagation(); dTr.remove(); });
   const routeLink = dTr.querySelector('.route-map-link');
   if(routeLink){
@@ -3882,7 +3587,17 @@ function renderTruckDetailInto(dTr, tr, t, viewerRole){
   }
   fillTruckDistance(t);
   wireNegotiationControls(dTr, t, viewerRole, ()=>{
-    if(dTr.isConnected) renderTruckDetailInto(dTr, tr, t, viewerRole);
+    dTr.remove();
+    if(tr.isConnected){
+      toggleTruckDetailRow(tr, t, viewerRole);
+    } else {
+      // Scoped to the correct table: My Trucks and Search Trucks can both
+      // have a row for the same truck id, so an unscoped lookup could grab
+      // the wrong one.
+      const scopeId = viewerRole==='carrier' ? 'truckBoardBody' : 'searchTrucksBody';
+      const freshTr = document.querySelector(`#${scopeId} tr[data-truck-id="${t.id}"]`);
+      if(freshTr) toggleTruckDetailRow(freshTr, t, viewerRole);
+    }
   });
 }
 
@@ -3904,23 +3619,8 @@ function toggleDetailRow(tr, l, dhKm, viewerRole){
   if(openRow) openRow.remove();
   const dTr = document.createElement('tr');
   dTr.className = 'detail-row';
-  tr.after(dTr);
-  renderLoadDetailInto(dTr, tr, l, dhKm, viewerRole);
-  // Pull the real, current offer/negotiation state from the server in the
-  // background — surfaces the OTHER party's offers/countering, since those
-  // never happened in this browser session. Rebuilds only this row's own
-  // content (not a full toggle), so it can't re-trigger itself into a loop.
-  syncNegotiationFromServer(l, 'load').then(()=>{
-    if(dTr.isConnected) renderLoadDetailInto(dTr, tr, l, dhKm, viewerRole);
-  });
-  // Same idea for tracking/POD — the other party's stage advances,
-  // exception reports, and POD actions happened in a different session.
-  syncTrackingFromServer(l).then(()=>{
-    if(dTr.isConnected) renderLoadDetailInto(dTr, tr, l, dhKm, viewerRole);
-  });
-}
-function renderLoadDetailInto(dTr, tr, l, dhKm, viewerRole){
   dTr.innerHTML = `<td colspan="12">${loadDetailHtml(l, dhKm, viewerRole)}</td>`;
+  tr.after(dTr);
   dTr.querySelector('.detail-close').addEventListener('click', (e)=>{ e.stopPropagation(); dTr.remove(); });
   const routeLink = dTr.querySelector('.route-map-link');
   if(routeLink){
@@ -3941,8 +3641,9 @@ function renderLoadDetailInto(dTr, tr, l, dhKm, viewerRole){
   fillLoadDistance(l);
   fillEta(l);
   const refreshRow = ()=>{
-    if(dTr.isConnected){
-      renderLoadDetailInto(dTr, tr, l, dhKm, viewerRole);
+    dTr.remove();
+    if(tr.isConnected){
+      toggleDetailRow(tr, l, dhKm, viewerRole);
     } else {
       // The table was rebuilt out from under us (e.g. approving POD also
       // regenerates invoices, which refreshes My Loads) — find the fresh
@@ -4078,6 +3779,7 @@ function populateAllSelects(){
   fillSelect(lfEquip, EQUIPMENT, true, "search.equip", "equip");
   fillSelect(lOrigin, GOVERNORATES, false, null, "gov");
   fillSelect(lDest, GOVERNORATES, false, null, "gov");
+  fillSelect(lCargo, CARGO_TYPES, false, null, "cargo");
   fillSelect(lEquip, EQUIPMENT, false, null, "equip");
 
   fillSelect(sqOrigin, GOVERNORATES, true, "search.origin", "gov");
@@ -4238,92 +3940,73 @@ function generateInvoicesForLoad(l){
    and both already run generateInvoicesForLoad(), which is what sets
    status to Completed; podStatus only gets set by the POD path specifically,
    so checking status here (not podStatus) is what makes both paths work. */
-let _readyToInvoiceCache = [];
-let _readyForTollsCache = [];
-async function syncReadyToInvoiceFromServer(){
-  if(!shipperAuth.loggedIn) return;
-  try{
-    const [freight, tolls] = await Promise.all([api.loadsReadyToInvoice(), api.loadsReadyForTolls()]);
-    _readyToInvoiceCache = freight.loads.map(serverLoadToLocal);
-    _readyForTollsCache = tolls.loads.map(serverLoadToLocal);
-  }catch(e){ console.warn('Could not sync ready-to-invoice loads:', e.message); }
-}
 function loadsReadyForFreightInvoice(shipperEmail){
-  return _readyToInvoiceCache;
+  return loads.filter(l => l.verifiedEmail===shipperEmail && l.status==="Completed" && l.rate && !l.shipperInvoiceId);
 }
 /* Same idea, but for tolls — only loads that actually have a real toll
    amount on record, and haven't already been pulled into a tolls sheet. */
 function loadsReadyForTollsInvoice(shipperEmail){
-  return _readyForTollsCache;
+  return loads.filter(l => l.verifiedEmail===shipperEmail && l.status==="Completed" && l.tolls>0 && !l.tollsInvoiceId);
 }
 /* The shipper picks which completed loads to collect into one invoice —
    this sums just the linehaul + VAT across all of them. Tolls never enter
-   this figure at all, by design. Real now: creates a genuine invoice on
-   the server, which is what actually stops these loads from being picked
-   again — the local cache above is just a snapshot for display. */
-async function generateConsolidatedShipperInvoice(loadIds){
-  try{
-    const res = await api.generateFreightInvoice(loadIds);
-    return serverInvoiceToLocal(res.invoice);
-  }catch(e){
-    showToast(e.message, 'err');
-    return null;
-  }
+   this figure at all, by design. */
+function generateConsolidatedShipperInvoice(loadIds){
+  const selected = loads.filter(l=>loadIds.includes(l.id));
+  if(selected.length===0) return null;
+  const issueDate = Date.now();
+  let totalLinehaul = 0, totalVat = 0;
+  const loadsIncluded = selected.map(l=>{
+    const fin = computeLoadFinancials(l);
+    totalLinehaul += fin.linehaul; totalVat += fin.vat;
+    return {loadId:l.id, tripNo:l.tripNo, origin:l.origin, originArea:l.originArea, dest:l.dest, destArea:l.destArea, linehaul:fin.linehaul, vat:fin.vat};
+  });
+  const shipperRec = USERS.shipper[selected[0].verifiedEmail];
+  const isContract = shipperRec && shipperRec.shipperTier === "Contract";
+  const dueDate = isContract ? issueDate + 7*24*60*60*1000 : issueDate;
+  const inv = {
+    id:cryptoId('inv'), invoiceNo:nextInvoiceNo(), role:"shipper", kind:"freight",
+    partyName: selected[0].company, partyPhone: selected[0].phone, partyEmail: selected[0].verifiedEmail||"",
+    loadsIncluded, issueDate,
+    breakdown: {linehaul: totalLinehaul, vat: totalVat, shipperSubtotal: totalLinehaul, shipperTotalDue: totalLinehaul+totalVat, tolls:0},
+    amount: totalLinehaul+totalVat,
+    paymentTerms: isContract ? "Net 7 Bank Transfer (post-POD)" : "Due immediately",
+    dueDate, status:"Pending", settlementStatus:"Pending Payment", receiptFileName:""
+  };
+  invoices.push(inv);
+  selected.forEach(l=>{ l.shipperInvoiceId = inv.id; });
+  return inv;
 }
 /* Same collection pattern, but for tolls only — a completely separate
    sheet with its own invoice number, its own total, and no VAT, since
    tolls are a pass-through reimbursement rather than a taxable charge. */
-async function generateConsolidatedTollsInvoice(loadIds){
-  try{
-    const res = await api.generateTollsInvoice(loadIds);
-    return serverInvoiceToLocal(res.invoice);
-  }catch(e){
-    showToast(e.message, 'err');
-    return null;
-  }
+function generateConsolidatedTollsInvoice(loadIds){
+  const selected = loads.filter(l=>loadIds.includes(l.id) && l.tolls>0);
+  if(selected.length===0) return null;
+  const issueDate = Date.now();
+  let totalTolls = 0;
+  const loadsIncluded = selected.map(l=>{
+    totalTolls += l.tolls;
+    return {loadId:l.id, tripNo:l.tripNo, origin:l.origin, originArea:l.originArea, dest:l.dest, destArea:l.destArea, tolls:l.tolls};
+  });
+  const shipperRec = USERS.shipper[selected[0].verifiedEmail];
+  const isContract = shipperRec && shipperRec.shipperTier === "Contract";
+  const dueDate = isContract ? issueDate + 7*24*60*60*1000 : issueDate;
+  const inv = {
+    id:cryptoId('inv'), invoiceNo:nextInvoiceNo(), role:"shipper", kind:"tolls",
+    partyName: selected[0].company, partyPhone: selected[0].phone, partyEmail: selected[0].verifiedEmail||"",
+    loadsIncluded, issueDate,
+    breakdown: {tolls: totalTolls},
+    amount: totalTolls,
+    paymentTerms: isContract ? "Net 7 Bank Transfer (post-POD)" : "Due immediately",
+    dueDate, status:"Pending", settlementStatus:"Pending Payment", receiptFileName:""
+  };
+  invoices.push(inv);
+  selected.forEach(l=>{ l.tollsInvoiceId = inv.id; });
+  return inv;
 }
 /* Overdue is computed live from the due date, not stored — so a Pending
    invoice automatically shows as Overdue once its due date passes. */
-/* Converts one server invoice row into the shape the existing billing UI
-   (renderBillingFor, openInvoicePrintView, etc.) already expects —
-   camelCase, loadsIncluded built from the recorded line items for
-   consolidated invoices, single-load fields for a plain shipment invoice.
-   This is what lets real server invoices display correctly through
-   render logic that was never rewritten, only fed real data. */
-function serverInvoiceToLocal(r){
-  const breakdown = r.breakdown_json ? JSON.parse(r.breakdown_json) : {};
-  const isConsolidated = r.kind === 'shipper_freight' || r.kind === 'shipper_tolls';
-  const loadsIncluded = isConsolidated && breakdown.lineItems
-    ? breakdown.lineItems.map(li => ({loadId: li.loadId, tripNo: li.tripNo, origin: li.origin, originArea: li.originArea,
-                                        dest: li.dest, destArea: li.destArea, linehaul: li.linehaul, vat: li.vat, tolls: li.tolls}))
-    : null;
-  return {
-    id: r.id, invoiceNo: r.invoice_no,
-    kind: r.kind === 'shipper_tolls' ? 'tolls' : (r.kind === 'shipper_freight' ? 'freight' : r.kind),
-    load_id: r.load_id, tripNo: r.trip_no, origin: r.origin, originArea: r.origin_area, dest: r.dest, destArea: r.dest_area,
-    role: r.role, partyName: r.party_name, partyPhone: r.party_phone, partyEmail: r.party_email,
-    loadsIncluded, breakdown, amount: r.amount, paymentTerms: r.payment_terms,
-    issueDate: r.issue_date, dueDate: r.due_date, status: r.status, settlementStatus: r.settlement_status,
-    receiptDocumentId: r.receipt_document_id, receiptFileName: r.receipt_document_id ? 'receipt on file' : '',
-    _serverId: r.id
-  };
-}
-/* Pulls every one of the current user's real invoices and merges them
-   into the local array the (unmodified) billing UI already reads from —
-   same merge pattern as loads/trucks/negotiations, for the same reason:
-   real data feeding render logic that predates the backend. */
-async function syncMyInvoicesFromServer(){
-  if(!authToken) return;
-  try{
-    const res = await api.myInvoices();
-    res.invoices.map(serverInvoiceToLocal).forEach(inv=>{
-      const idx = invoices.findIndex(i=>i.id===inv.id);
-      if(idx>=0) invoices[idx] = {...invoices[idx], ...inv};
-      else invoices.unshift(inv);
-    });
-  }catch(e){ console.warn('Could not sync invoices from server:', e.message); }
-}
-
 function invoiceEffectiveStatus(inv){
   if(inv.status === "Paid") return "Paid";
   if(Date.now() > inv.dueDate) return "Overdue";
@@ -4540,7 +4223,7 @@ function openRequestModal(l){
   `;
   openModal(html);
   document.getElementById("reqCancelBtn").addEventListener("click", closeModal);
-  document.getElementById("reqSendBtn").addEventListener("click", async (e)=>{
+  document.getElementById("reqSendBtn").addEventListener("click", (e)=>{
     const truckEmptyDate = document.getElementById("offEmptyDate").value;
     const truckEmptyTimeFrom = document.getElementById("offEmptyTimeFrom").value;
     const truckEmptyTimeTo = document.getElementById("offEmptyTimeTo").value;
@@ -4557,22 +4240,20 @@ function openRequestModal(l){
     const btn = e.currentTarget;
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span>${i18n('toast.sending')}`;
-    l.offer = {
-      carrierEmail: carrierAuth.loggedIn ? carrierAuth.email : "", carrierName: carrierAuth.loggedIn ? carrierAuth.name : "",
-      carrierPhone: (USERS.carrier[carrierAuth.email]||{}).phone||"",
-      truckEmptyDate, truckEmptyTimeFrom, truckEmptyTimeTo, truckGov, truckArea,
-      status: "Pending",
-      offers: [{by:"carrier", price, note, at: Date.now()}]
-    };
-    try{
-      const res = await api.postNegotiation({targetType:'load', targetId: l.id, price, note});
-      l._negotiationId = res.negotiation.id;
-    }catch(err){ console.warn('Offer posted locally but failed to save to the server:', err.message); }
-    closeModal();
-    showToast(`${i18n('toast.requestSentTo')} ${l.company} — ${i18n('offer.sentToast')}`);
-    logActivity('carrier', `✅ ${i18n('offer.sentToast')} — ${l.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${l.tripNo})`, {sound:true});
-    logActivity('shipper', `📩 ${i18n('bid.newOfferReceived')} — ${l.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${l.tripNo})`, {sound:true});
-    renderLoadData();
+    setTimeout(()=>{
+      l.offer = {
+        carrierEmail: carrierAuth.loggedIn ? carrierAuth.email : "", carrierName: carrierAuth.loggedIn ? carrierAuth.name : "",
+        carrierPhone: (USERS.carrier[carrierAuth.email]||{}).phone||"",
+        truckEmptyDate, truckEmptyTimeFrom, truckEmptyTimeTo, truckGov, truckArea,
+        status: "Pending",
+        offers: [{by:"carrier", price, note, at: Date.now()}]
+      };
+      closeModal();
+      showToast(`${i18n('toast.requestSentTo')} ${l.company} — ${i18n('offer.sentToast')}`);
+      logActivity('carrier', `✅ ${i18n('offer.sentToast')} — ${l.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${l.tripNo})`, {sound:true});
+      logActivity('shipper', `📩 ${i18n('bid.newOfferReceived')} — ${l.company} (${price.toLocaleString()} EGP, ${i18n('col.trip')} ${l.tripNo})`, {sound:true});
+      renderLoadData();
+    }, 650);
   });
 }
 
@@ -5151,12 +4832,8 @@ function renderActiveShipments(role){
   });
 }
 
-async function openShipmentModal(l, role){
+function openShipmentModal(l, role){
   role = role || 'carrier';
-  // Pull the real, current tracking/POD state before rendering — this is
-  // the primary Tracking-tab entry point, so it needs to reflect whatever
-  // the OTHER party just did in their own session, not a stale local copy.
-  await syncTrackingFromServer(l);
   if(typeof markTrackingSeenFor === 'function') markTrackingSeenFor(l.id, role);
   openModal(`${loadDetailHtml(l, null, role)}<div class="modal-actions"><button type="button" class="btn-secondary" id="shipmentModalCloseBtn" data-i18n="btn.cancel">Close</button></div>`);
   modalBox.classList.add("wide-modal");
@@ -5410,7 +5087,7 @@ async function submitLoadForm(){
   const profile = USERS.shipper[shipperAuth.email] || {};
   const company = shipperAuth.name;
   const phone = profile.phone || "";
-  const origin = lOrigin.value, dest = lDest.value, cargo = lCargo.value.trim(), equip = lEquip.value;
+  const origin = lOrigin.value, dest = lDest.value, cargo = lCargo.value, equip = lEquip.value;
   const originArea = document.getElementById("lOriginArea").value.trim();
   const destArea = document.getElementById("lDestArea").value.trim();
   const weight = document.getElementById("lWeight").value.trim();
@@ -5426,11 +5103,6 @@ async function submitLoadForm(){
   };
   const extraHandling = document.getElementById("lExtraHandling").value.trim();
 
-  if(!cargo){
-    loadFormMsg.textContent = i18n('post.cargoRequired');
-    loadFormMsg.classList.add("err");
-    return;
-  }
   if(!pickup){
     loadFormMsg.textContent = "Add a pickup date.";
     loadFormMsg.classList.add("err");
@@ -5473,7 +5145,7 @@ async function submitLoadForm(){
   loadFormMsg.textContent = `Added — ${laneLabel(origin,originArea)} to ${laneLabel(dest,destArea)} is live on the board.`;
   showToast(`${i18n('toast.loadPosted')}: ${laneLabel(origin,originArea)} ▸ ${laneLabel(dest,destArea)}`);
   logActivity('shipper', `📦 ${i18n('dash.postLoad')}: ${laneLabel(origin,originArea)} ▸ ${laneLabel(dest,destArea)}`);
-  ["lCargo","lOriginArea","lDestArea","lWeight","lPickup","lPickupTime","lRate","lNotes","lExtraHandling"].forEach(id=>{ document.getElementById(id).value = ""; });
+  ["lOriginArea","lDestArea","lWeight","lPickup","lPickupTime","lRate","lNotes","lExtraHandling"].forEach(id=>{ document.getElementById(id).value = ""; });
   ["lHandlingTarps","lHandlingRopes"].forEach(id=>{ document.getElementById(id).checked = false; });
   document.getElementById("lPickupType").value = "FCFS";
   document.getElementById("lPaymentTerms").value = "InstaPay 50% Advance";
@@ -5511,49 +5183,6 @@ const CONTRACTED_LANES = [
    restart. authToken is the one piece of session state that lives outside
    the loads/trucks/USERS mirrors below. */
 let authToken = null;
-/* Sessions previously didn't survive a page reload at all — authToken was
-   purely an in-memory variable, so refreshing the page silently logged
-   everyone out. Persisting just the token (never anything else) to
-   localStorage, and re-validating it against the server on load, fixes
-   that without trusting anything the client itself claims about who's
-   logged in — restoreSessionFromStorage always re-fetches the real user
-   record before treating anyone as authenticated. */
-function persistSession(token, role){
-  try{ localStorage.setItem('loadmasr_session', JSON.stringify({token, role})); }catch(e){ /* storage unavailable — session just won't survive a reload */ }
-}
-function clearPersistedSession(){
-  try{ localStorage.removeItem('loadmasr_session'); }catch(e){}
-}
-async function restoreSessionFromStorage(){
-  let saved;
-  try{ saved = JSON.parse(localStorage.getItem('loadmasr_session') || 'null'); }catch(e){ return; }
-  if(!saved || !saved.token) return;
-  authToken = saved.token;
-  try{
-    const res = await api.me();
-    if(res.user.role !== saved.role){ clearPersistedSession(); authToken = null; return; }
-    if(saved.role === 'admin'){
-      adminLoggedIn = true;
-      const gate = document.getElementById("adminGate"), panel = document.getElementById("adminPanel");
-      if(gate) gate.style.display = "none";
-      if(panel) panel.style.display = "block";
-      if(typeof setMode === 'function') setMode('admin'); // also renders the panel
-      else renderAdminPanel();
-      return;
-    }
-    mirrorServerUserLocally(saved.role, res.user);
-    const auth = getAuth(saved.role);
-    auth.loggedIn = true; auth.email = res.user.email; auth.name = res.user.name;
-    auth.verified = !!res.user.verified; auth.plan = res.user.plan;
-    await refreshBoardsFromServer(saved.role);
-    if(typeof setMode === 'function') setMode(saved.role); // shows the right top-level section (shipper/carrier), not just the default
-    updateAuthView(saved.role);
-  }catch(e){
-    // Token is invalid/expired — clear it so the person sees the normal
-    // logged-out screen rather than a silently broken authenticated state.
-    clearPersistedSession(); authToken = null;
-  }
-}
 async function apiFetch(method, path, body){
   const headers = {'Content-Type':'application/json'};
   if(authToken) headers['Authorization'] = `Bearer ${authToken}`;
@@ -5578,7 +5207,6 @@ const api = {
   postLoad: (payload) => apiFetch('POST', '/api/loads', payload),
   myLoads: () => apiFetch('GET', '/api/loads/mine'),
   allLoads: () => apiFetch('GET', '/api/loads'),
-  bookedLoads: () => apiFetch('GET', '/api/loads/booked'),
   postTruck: (payload) => apiFetch('POST', '/api/trucks', payload),
   myTrucks: () => apiFetch('GET', '/api/trucks/mine'),
   allTrucks: () => apiFetch('GET', '/api/trucks'),
@@ -5586,56 +5214,7 @@ const api = {
   adminApprove: (userId) => apiFetch('POST', `/api/admin/users/${userId}/approve`, {}),
   adminReject: (userId, reason) => apiFetch('POST', `/api/admin/users/${userId}/reject`, {reason}),
   adminAllLoads: () => apiFetch('GET', '/api/admin/loads'),
-  adminAllTrucks: () => apiFetch('GET', '/api/admin/trucks'),
-  postNegotiation: (payload) => apiFetch('POST', '/api/negotiations', payload),
-  getNegotiation: (targetType, targetId) => apiFetch('GET', `/api/negotiations/${targetType}/${targetId}`),
-  negotiationOffer: (id, price, note) => apiFetch('POST', `/api/negotiations/${id}/offers`, {price, note}),
-  negotiationAccept: (id) => apiFetch('POST', `/api/negotiations/${id}/accept`, {}),
-  negotiationDecline: (id) => apiFetch('POST', `/api/negotiations/${id}/decline`, {}),
-  myNegotiations: () => apiFetch('GET', '/api/negotiations/mine'),
-  myInvoices: () => apiFetch('GET', '/api/invoices/mine'),
-  uploadInvoiceReceipt: (invoiceId, filename, mimeType, base64Data) => apiFetch('POST', `/api/invoices/${invoiceId}/receipt`, {filename, mimeType, base64Data}),
-  setFee: (userId, amount, note) => apiFetch('POST', `/api/admin/users/${userId}/set-fee`, {amount, note}),
-  adminConfirmSettled: (invoiceId) => apiFetch('POST', `/api/admin/invoices/${invoiceId}/confirm-settled`, {}),
-  adminPaymentVerifications: () => apiFetch('GET', '/api/admin/payment-verifications'),
-  getSettings: () => apiFetch('GET', '/api/settings'),
-  adminSetSetting: (key, value) => apiFetch('POST', '/api/admin/settings', {key, value}),
-  adminSuspendUser: (id) => apiFetch('POST', `/api/admin/users/${id}/suspend`, {}),
-  adminReactivateUser: (id) => apiFetch('POST', `/api/admin/users/${id}/reactivate`, {}),
-  adminDeleteUser: (id) => apiFetch('DELETE', `/api/admin/users/${id}`),
-  adminGetUser: (id) => apiFetch('GET', `/api/admin/users/${id}`),
-  adminDeleteLoad: (id) => apiFetch('DELETE', `/api/admin/loads/${id}`),
-  adminDeleteTruck: (id) => apiFetch('DELETE', `/api/admin/trucks/${id}`),
-  adminAllNegotiations: () => apiFetch('GET', '/api/admin/negotiations'),
-  adminCancelNegotiation: (id) => apiFetch('POST', `/api/admin/negotiations/${id}/cancel`, {}),
-  adminAllInvoices: () => apiFetch('GET', '/api/admin/invoices'),
-  adminMarkInvoicePaid: (id) => apiFetch('POST', `/api/admin/invoices/${id}/mark-paid`, {}),
-  loadsReadyToInvoice: () => apiFetch('GET', '/api/loads/ready-to-invoice'),
-  loadsReadyForTolls: () => apiFetch('GET', '/api/loads/ready-for-tolls'),
-  generateFreightInvoice: (loadIds) => apiFetch('POST', '/api/invoices/generate-freight', {loadIds}),
-  generateTollsInvoice: (loadIds) => apiFetch('POST', '/api/invoices/generate-tolls', {loadIds}),
-  addDriver: (name, phone) => apiFetch('POST', '/api/drivers', {name, phone}),
-  myDrivers: () => apiFetch('GET', '/api/drivers/mine'),
-  updateDriver: (id, patch) => apiFetch('PATCH', `/api/drivers/${id}`, patch),
-  logShipment: (payload) => apiFetch('POST', '/api/carrier-shipments', payload),
-  myShipments: () => apiFetch('GET', '/api/carrier-shipments/mine'),
-  updateShipment: (id, patch) => apiFetch('PATCH', `/api/carrier-shipments/${id}`, patch),
-  updateTracking: (loadId, stage, driverName, driverPhone) => apiFetch('PATCH', `/api/loads/${loadId}/tracking`, {stage, driverName, driverPhone}),
-  reportException: (loadId, type, note) => apiFetch('POST', `/api/loads/${loadId}/exception`, {type, note}),
-  uploadPod: (loadId, filename, mimeType, base64Data, tolls) => apiFetch('POST', `/api/loads/${loadId}/pod`, {filename, mimeType, base64Data, tolls}),
-  approvePod: (loadId) => apiFetch('POST', `/api/loads/${loadId}/pod/approve`, {}),
-  disputePod: (loadId, reason) => apiFetch('POST', `/api/loads/${loadId}/pod/dispute`, {reason}),
-  getLoad: async (loadId) => {
-    // No single-load GET endpoint exists — reuse the list ones, since
-    // "mine" covers a shipper's own loads and "booked" covers a carrier's.
-    const [mine, booked, all] = await Promise.all([
-      apiFetch('GET','/api/loads/mine').catch(()=>({loads:[]})),
-      apiFetch('GET','/api/loads/booked').catch(()=>({loads:[]})),
-      apiFetch('GET','/api/loads').catch(()=>({loads:[]}))
-    ]);
-    const found = [...mine.loads, ...booked.loads, ...all.loads].find(l=>l.id===loadId);
-    return found ? {load: found} : null;
-  }
+  adminAllTrucks: () => apiFetch('GET', '/api/admin/trucks')
 };
 /* Converts one server load/truck row (snake_case, flat) into this
    frontend's existing in-memory shape (camelCase, with handling_json
@@ -5644,19 +5223,19 @@ const api = {
    that now originated from the real database. */
 function serverLoadToLocal(r){
   return {
-    id:r.id, tripNo:r.trip_no, verifiedEmail:r.shipper_email||null, company:r.shipper_name||"", phone:r.shipper_phone||"",
+    id:r.id, tripNo:r.trip_no, verifiedEmail:null, company:r.shipper_name||"", phone:r.shipper_phone||"",
     origin:r.origin, originArea:r.origin_area||"", dest:r.dest, destArea:r.dest_area||"",
     cargo:r.cargo, equip:r.equip, weight:r.weight||"", pickup:r.pickup_date||"", pickupType:r.pickup_type||"FCFS",
     pickupTime:r.pickup_time||"", paymentTerms:r.payment_terms||"", handling: r.handling_json?JSON.parse(r.handling_json):{},
     notes:r.notes||"", rate:r.rate, status:r.status, postedAt:r.posted_at,
     trackingStage:r.tracking_stage, driverName:r.driver_name, driverPhone:r.driver_phone,
-    bookedByCarrierEmail:r.booked_by_carrier_email||null, podStatus:r.pod_status, tolls:r.tolls||0, invoicesGenerated:!!r.invoices_generated,
+    bookedByCarrierEmail:null, podStatus:r.pod_status, tolls:r.tolls||0, invoicesGenerated:!!r.invoices_generated,
     _serverId:r.id
   };
 }
 function serverTruckToLocal(r){
   return {
-    id:r.id, tripNo:r.trip_no, postedByEmail:r.carrier_email||null, company:r.carrier_name||"", phone:r.carrier_phone||"",
+    id:r.id, tripNo:r.trip_no, postedByEmail:null, company:r.carrier_name||"", phone:r.carrier_phone||"",
     origin:r.origin, originArea:r.origin_area||"", dest:r.dest, destArea:r.dest_area||"",
     equip:r.equip, capacity:r.capacity||"", avail:r.avail_date||"", notes:r.notes||"",
     status:r.status, postedAt:r.posted_at, destFlexible: !r.dest, _serverId:r.id
@@ -5671,32 +5250,13 @@ function getShipperTier(){
   return (rec && rec.shipperTier) || "Spot";
 }
 
-/* ---------- Founding Shipper promo ---------- */
-let pioneerSlotsRemaining = 17;
-let pioneerMaxSlots = 17;
+/* ---------- Founding Shipper promo (first 3 spots) ---------- */
+let pioneerSlotsRemaining = 3;
 const PIONEER_CODE = "PIONEER3";
-
-/* Fetches the real, current count from the server — called on page load
-   (not just after a local signup) so any visitor, whether they've signed
-   up yet or not, sees the actual current number rather than a hardcoded
-   fallback that never updates until they personally complete a signup. */
-async function syncPioneerStatusFromServer(){
-  try{
-    const status = await api.pioneerStatus();
-    pioneerSlotsRemaining = status.slotsRemaining;
-    pioneerMaxSlots = status.maxSlots;
-    updatePioneerBanner();
-  }catch(e){ /* offline / no server reachable yet — keep the fallback defaults */ }
-}
-syncPioneerStatusFromServer();
 
 function updatePioneerBanner(){
   const heroStat = document.getElementById("authHeroPioneerSlots");
-  // The exact count is never shown to shippers — just that spots are
-  // limited (or gone). The real number still drives validation
-  // (wizState.promoValid, pricing-page display, etc.) below; this only
-  // controls what's shown on screen.
-  if(heroStat) heroStat.textContent = i18n("pioneer.limitedLabel");
+  if(heroStat) heroStat.textContent = pioneerSlotsRemaining;
   const banner = document.getElementById("pioneerBanner");
   const text = document.getElementById("pioneerBannerText");
   if(!banner) return;
@@ -5704,7 +5264,9 @@ function updatePioneerBanner(){
     banner.style.display = "none";
     return;
   }
-  text.textContent = i18n("pioneer.banner");
+  text.textContent = i18n("pioneer.banner")
+    .replace("{n}", pioneerSlotsRemaining)
+    .replace("{s}", pioneerSlotsRemaining===1?"":"s");
 }
 document.getElementById("pioneerBannerClose").addEventListener("click", ()=>{
   document.getElementById("pioneerBanner").style.display = "none";
@@ -5922,7 +5484,7 @@ function wizCheckPromo(){
     wizState.promoError = "That code isn't recognized.";
   } else if(pioneerSlotsRemaining<=0){
     wizState.promoValid = false;
-    wizState.promoError = `All Founding Shipper spots have already been claimed.`;
+    wizState.promoError = "All 3 Founding Shipper spots have already been claimed.";
   } else {
     wizState.promoValid = true;
     wizState.promoError = "";
@@ -5944,7 +5506,6 @@ async function finalizeWizardAccount(){
     throw e; // let the caller know signup didn't succeed, so it doesn't advance to step 4
   }
   authToken = data.token;
-  persistSession(data.token, 'shipper');
   mirrorServerUserLocally('shipper', data.user);
   // The server is the source of truth for whether the pioneer code actually
   // landed a slot (it may have run out between page-load and submission) —
@@ -6200,7 +5761,6 @@ async function finalizeCarrierWizardAccount(){
     throw e;
   }
   authToken = data.token;
-  persistSession(data.token, 'carrier');
   mirrorServerUserLocally('carrier', data.user);
   carrierAuth.loggedIn = true;
   carrierAuth.email = email;
@@ -6303,7 +5863,6 @@ function updateAuthView(role){
   else if(!auth.verified){
     pricingEl.style.display='block';
     if(role==='shipper' && typeof renderShipperPricing==='function') renderShipperPricing();
-    if(role==='shipper' && typeof renderShipperFeeStatus==='function') renderShipperFeeStatus();
   }
   else {
     dashEl.style.display='flex';
@@ -6604,7 +6163,6 @@ async function handleLogin(role, email, password, msgEl){
     return;
   }
   authToken = data.token;
-  persistSession(data.token, role);
   mirrorServerUserLocally(role, data.user);
   const auth = getAuth(role);
   auth.loggedIn = true; auth.email = email; auth.name = data.user.name;
@@ -6642,22 +6200,11 @@ async function refreshBoardsFromServer(role){
   try{
     const calls = [api.allLoads(), api.allTrucks()];
     calls.push(role==='shipper' ? api.myLoads() : api.myTrucks());
-    // A carrier's own booked loads (accepted offers/negotiations) are
-    // deliberately excluded from the public "active" listing once
-    // booked — this is the only place that still fetches them for a
-    // carrier, so tracking/POD/etc. keep working on a load after it's
-    // no longer publicly visible.
-    if(role==='carrier') calls.push(api.bookedLoads());
-    const results = await Promise.all(calls);
-    const [allLoadsRes, allTrucksRes, mineRes] = results;
+    const [allLoadsRes, allTrucksRes, mineRes] = await Promise.all(calls);
     mergeServerRecords(loads, allLoadsRes.loads.map(serverLoadToLocal), 'id');
     mergeServerRecords(trucks, allTrucksRes.trucks.map(serverTruckToLocal), 'id');
     if(role==='shipper') mergeServerRecords(loads, mineRes.loads.map(serverLoadToLocal), 'id');
-    else{
-      mergeServerRecords(trucks, mineRes.trucks.map(serverTruckToLocal), 'id');
-      const bookedRes = results[3];
-      if(bookedRes) mergeServerRecords(loads, bookedRes.loads.map(serverLoadToLocal), 'id');
-    }
+    else mergeServerRecords(trucks, mineRes.trucks.map(serverTruckToLocal), 'id');
     // The merge above only mutates the arrays — nothing re-renders on its
     // own just because the data changed, so explicitly refresh every board
     // that could now show different results (both search boards, and both
@@ -6677,7 +6224,6 @@ async function logout(role){
   const auth = getAuth(role);
   try{ await api.logout(); }catch(e){ /* proceed with local logout regardless */ }
   authToken = null;
-  clearPersistedSession();
   auth.loggedIn=false; auth.verified=false; auth.email=null; auth.name=null; auth.plan=null;
   updateAuthView(role);
 }
@@ -6685,15 +6231,7 @@ async function choosePlan(role, planName){
   const auth = getAuth(role);
   const users = USERS[role];
   if(role==='shipper'){
-    // Selecting a plan no longer verifies a shipper by itself — an admin
-    // sets a real fee amount, the shipper pays via InstaPay and uploads a
-    // receipt, and confirming THAT is what activates the account. This
-    // just records the shipper's plan preference for the admin to see.
     try{ await api.selectPlan(planName); }catch(e){ console.warn('select-plan failed:', e.message); }
-    if(auth.email && users[auth.email]) users[auth.email].plan = planName;
-    auth.plan = planName;
-    updateAuthView(role);
-    return;
   }
   if(auth.email && users[auth.email]){ users[auth.email].verified = true; users[auth.email].plan = planName; }
   auth.verified = true; auth.plan = planName;
@@ -6781,7 +6319,7 @@ function renderShipperPricing(){
     card.innerHTML = `
       <div class="plan-badge">Limited offer</div>
       <div class="plan-name">Founding Shipper</div>
-      <div class="plan-for">Limited spots left</div>
+      <div class="plan-for">${pioneerSlotsRemaining} of 3 spots left</div>
       <div class="plan-price">FREE <span>lifetime, no fees</span></div>
       <button class="plan-cta" type="button" id="claimPioneerFromPricing">Claim your spot</button>
       <ul class="plan-features">${SHIPPER_FEATURES.map(f=>`<li class="included"><span class="check">✓</span>${escapeHtml(f)}</li>`).join("")}</ul>`;
@@ -6803,72 +6341,6 @@ function renderShipperPricing(){
 renderShipperPricing();
 updatePioneerBanner();
 
-/* Shows where a non-pioneer shipper's account actually stands: waiting
-   for the admin to set a fee, waiting for them to pay and upload a
-   receipt, or waiting for the admin to confirm it — this IS the real
-   activation gate now, not the plan-selection buttons above it. */
-async function renderShipperFeeStatus(){
-  const panel = document.getElementById("shipperFeeStatusPanel");
-  if(!panel || !shipperAuth.loggedIn) return;
-  let feeInvoice = null;
-  try{
-    const res = await api.myInvoices();
-    feeInvoice = (res.invoices||[]).find(i => i.kind === 'platform_fee' && i.status !== 'Paid');
-  }catch(e){ panel.style.display = "none"; return; }
-
-  if(!feeInvoice){
-    panel.style.display = "block";
-    panel.innerHTML = `
-      <div class="toll-note" style="text-align:center;">
-        ⏳ <b>${i18n('fee.pendingTitle')}</b><br>
-        <span style="font-size:0.86rem;">${i18n('fee.pendingBody')}</span>
-      </div>`;
-    return;
-  }
-
-  panel.style.display = "block";
-  if(feeInvoice.settlement_status === 'In Verification'){
-    panel.innerHTML = `
-      <div class="toll-note" style="text-align:center;">
-        📨 <b>${i18n('fee.verifyingTitle')}</b><br>
-        <span style="font-size:0.86rem;">${i18n('fee.verifyingBody')}</span>
-      </div>`;
-    return;
-  }
-
-  const breakdown = feeInvoice.breakdown_json ? JSON.parse(feeInvoice.breakdown_json) : {};
-  panel.innerHTML = `
-    <div class="modal-summary" style="margin-bottom:14px;">
-      <div class="ms-row"><span>${i18n('fee.amountDue')}</span><b>${feeInvoice.amount.toLocaleString()} EGP</b></div>
-      ${breakdown.note ? `<div class="ms-row"><span>${i18n('fee.instructions')}</span><b>${escapeHtml(breakdown.note)}</b></div>` : ""}
-    </div>
-    <p class="modal-sub" style="text-align:center;">${i18n('fee.payBody')}</p>
-    <div class="upload-box" id="feeReceiptDropzone">
-      <input type="file" id="feeReceiptFile" accept="image/*,.pdf" style="display:none;">
-      <label for="feeReceiptFile" class="upload-label">📎 <span id="feeReceiptFileName">${i18n('fee.chooseReceipt')}</span></label>
-    </div>
-    <button type="button" class="btn-primary" style="width:100%;margin-top:12px;" id="feeReceiptSubmit">${i18n('fee.submitReceipt')}</button>
-    <div class="auth-msg" id="feeReceiptMsg"></div>
-  `;
-  let pendingFile = null;
-  const fileInput = document.getElementById("feeReceiptFile");
-  fileInput.addEventListener('change', ()=>{
-    pendingFile = fileInput.files[0] || null;
-    document.getElementById("feeReceiptFileName").textContent = pendingFile ? pendingFile.name : i18n('fee.chooseReceipt');
-  });
-  document.getElementById("feeReceiptSubmit").addEventListener('click', async ()=>{
-    const msgEl = document.getElementById("feeReceiptMsg");
-    if(!pendingFile){ msgEl.textContent = i18n('fee.receiptRequired'); msgEl.style.display = "block"; return; }
-    try{
-      const base64Data = await fileToBase64(pendingFile);
-      await api.uploadInvoiceReceipt(feeInvoice.id, pendingFile.name, pendingFile.type, base64Data);
-      showToast(i18n('fee.receiptSubmittedToast'));
-      renderShipperFeeStatus();
-    }catch(e){ msgEl.textContent = e.message; msgEl.style.display = "block"; }
-  });
-}
-renderShipperFeeStatus();
-
 /* ---------- App sidebar nav ---------- */
 function wireAppNav(dashId){
   const dash = document.getElementById(dashId);
@@ -6879,16 +6351,14 @@ function wireAppNav(dashId){
     navBtns.forEach(b=> b.classList.toggle('active', b.dataset.view===view));
     views.forEach(v=> v.classList.toggle('open', v.dataset.viewPanel===view));
     if(view === 'notifications') markNotifsRead(role);
-    if(view === 'chat') { markAllChatThreadsSeen(role); if(authToken) syncAllMyNegotiations(role).then(()=>renderChatList(role)); }
+    if(view === 'chat') markAllChatThreadsSeen(role);
     if(view === 'tracking') markAllTrackingSeen(role);
-    if(view === 'billing' && authToken) renderBillingPanels();
-    if(view === 'operations' && authToken) renderCarrierOperations();
     // The boards are a snapshot fetched at login — pull a fresh copy from
     // the real server whenever someone actually looks at a board, so
     // postings from other sessions since then show up without needing a
     // full re-login. Genuinely live updates would need push (websockets);
     // this is the lightweight version — fresh on demand.
-    if((view === 'search' || view === 'mine' || view === 'tracking') && authToken) refreshBoardsFromServer(role);
+    if((view === 'search' || view === 'mine') && authToken) refreshBoardsFromServer(role);
   }
   navBtns.forEach(btn=> btn.addEventListener('click', ()=> goto(btn.dataset.view)));
   dash.querySelectorAll('[data-goto]').forEach(btn=>{
@@ -6925,7 +6395,6 @@ document.getElementById("adminGateSubmit").addEventListener("click", async ()=>{
     return;
   }
   authToken = data.token;
-  persistSession(data.token, 'admin');
   msgEl.textContent = "";
   adminLoggedIn = true;
   document.getElementById("adminGate").style.display = "none";
@@ -6976,10 +6445,10 @@ async function renderAdminAllLoads(){
   if(!body) return;
   let serverLoads;
   try{ serverLoads = (await api.adminAllLoads()).loads.map(serverLoadToLocal); }
-  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="9">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`; return; }
+  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="8">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`; return; }
   document.getElementById("admLoadsTotal").textContent = serverLoads.length;
   if(serverLoads.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="9">${i18n('admin.allLoadsEmpty')}</td></tr>`;
+    body.innerHTML = `<tr class="empty-row"><td colspan="8">${i18n('admin.allLoadsEmpty')}</td></tr>`;
     return;
   }
   body.innerHTML = serverLoads.map(l=>`
@@ -6992,26 +6461,18 @@ async function renderAdminAllLoads(){
       <td class="nums">${l.rate ? l.rate.toLocaleString()+" EGP" : "—"}</td>
       <td><span class="status-badge ${l.status}">${statusLabel(l.status)}</span></td>
       <td class="nums muted">${ageLabel(l.postedAt)}</td>
-      <td><button type="button" class="btn-remove" data-adm-del-load="${l.id}">${i18n('admin.delete')}</button></td>
     </tr>
   `).join("");
-  body.querySelectorAll('[data-adm-del-load]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      if(!confirm(i18n('admin.confirmDelete'))) return;
-      try{ await api.adminDeleteLoad(btn.dataset.admDelLoad); showToast('Load removed.'); renderAdminAllLoads(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
 }
 async function renderAdminAllTrucks(){
   const body = document.getElementById("adminAllTrucksBody");
   if(!body) return;
   let serverTrucks;
   try{ serverTrucks = (await api.adminAllTrucks()).trucks.map(serverTruckToLocal); }
-  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="7">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`; return; }
+  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="6">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`; return; }
   document.getElementById("admTrucksTotal").textContent = serverTrucks.length;
   if(serverTrucks.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="7">${i18n('admin.allTrucksEmpty')}</td></tr>`;
+    body.innerHTML = `<tr class="empty-row"><td colspan="6">${i18n('admin.allTrucksEmpty')}</td></tr>`;
     return;
   }
   body.innerHTML = serverTrucks.map(t=>`
@@ -7022,198 +6483,9 @@ async function renderAdminAllTrucks(){
       <td>${escapeHtml(t.company||"—")}</td>
       <td><span class="status-badge ${t.status}">${statusLabel(t.status)}</span></td>
       <td class="nums muted">${formatDate(t.avail)}</td>
-      <td><button type="button" class="btn-remove" data-adm-del-truck="${t.id}">${i18n('admin.delete')}</button></td>
     </tr>
   `).join("");
-  body.querySelectorAll('[data-adm-del-truck]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      if(!confirm(i18n('admin.confirmDelete'))) return;
-      try{ await api.adminDeleteTruck(btn.dataset.admDelTruck); showToast('Truck removed.'); renderAdminAllTrucks(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
 }
-
-/* All Users — every account, suspend/reactivate/delete/view. Separate
-   from the KYC queue above (which is scoped to PENDING/APPROVED/REJECTED
-   verification status) — this is every account regardless of that,
-   fetched across all three statuses in one pass. */
-let _adminAllUsersCache = {};
-async function renderAdminAllUsers(){
-  const body = document.getElementById("adminAllUsersBody");
-  if(!body) return;
-  let allUsers;
-  try{
-    const [pending, approved, rejected] = await Promise.all([
-      api.adminQueue('PENDING'), api.adminQueue('APPROVED'), api.adminQueue('REJECTED')
-    ]);
-    allUsers = [...pending.users, ...approved.users, ...rejected.users];
-  }catch(e){
-    body.innerHTML = `<tr class="empty-row"><td colspan="4">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`;
-    return;
-  }
-  document.getElementById("admUsersTotal").textContent = allUsers.length;
-  _adminAllUsersCache = {};
-  allUsers.forEach(u=>{ _adminAllUsersCache[u.id] = u; });
-  if(allUsers.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="4">${i18n('admin.allLoadsEmpty')}</td></tr>`;
-    return;
-  }
-  body.innerHTML = allUsers.map(u=>{
-    const suspended = u.account_status === 'SUSPENDED';
-    return `
-    <tr>
-      <td><div class="route-cell">${escapeHtml(u.name)}</div><div class="muted" style="font-size:0.78rem;">${escapeHtml(u.email)}</div></td>
-      <td><span class="eq-badge">${u.role.toUpperCase()}</span></td>
-      <td><span class="status-badge ${suspended?'Rejected':'Active'}">${suspended?i18n('admin.suspended'):i18n('admin.active')}</span></td>
-      <td>
-        <button type="button" class="btn-primary" style="padding:8px 16px;font-size:0.84rem;" data-adm-view-user="${u.id}">${i18n('admin.viewProfile')}</button>
-        ${suspended
-          ? `<button type="button" class="btn-secondary" data-adm-reactivate="${u.id}">${i18n('admin.reactivate')}</button>`
-          : `<button type="button" class="btn-secondary" data-adm-suspend="${u.id}">${i18n('admin.suspend')}</button>`}
-        <button type="button" class="btn-remove" data-adm-del-user="${u.id}" data-adm-name="${escapeHtml(u.name)}">${i18n('admin.delete')}</button>
-      </td>
-    </tr>
-  `;}).join("");
-  body.querySelectorAll('[data-adm-suspend]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{ await api.adminSuspendUser(btn.dataset.admSuspend); showToast('Account suspended.'); renderAdminAllUsers(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-  body.querySelectorAll('[data-adm-reactivate]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{ await api.adminReactivateUser(btn.dataset.admReactivate); showToast('Account reactivated.'); renderAdminAllUsers(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-  body.querySelectorAll('[data-adm-del-user]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      if(!confirm(i18n('admin.confirmDelete'))) return;
-      try{ await api.adminDeleteUser(btn.dataset.admDelUser); showToast(`${btn.dataset.admName} removed.`); renderAdminAllUsers(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-  body.querySelectorAll('[data-adm-view-user]').forEach(btn=>{
-    btn.addEventListener('click', ()=> openAdminUserProfileModal(btn.dataset.admViewUser));
-  });
-}
-
-function openAdminUserProfileModal(userId){
-  const u = _adminAllUsersCache[userId];
-  if(!u) return;
-  const rows = [
-    ['Email', u.email], ['Phone', u.phone||'—'], ['Role', u.role],
-    ['Contact person', u.contact_person||u.manager_name||'—'],
-    ['TRN', u.trn||'—'], ['Sijill', u.sijill||'—'],
-    ['National ID', u.national_id||'—'], ['License', u.license_no||'—'], ['Fleet size', u.fleet_count||'—'],
-    ['Verification', u.verification_status], ['Account status', u.account_status],
-    ['Verified (billing)', u.verified ? 'Yes' : 'No'], ['Plan', u.plan||'—'],
-    ['Pioneer', u.is_pioneer_shipper ? 'Yes' : 'No']
-  ].filter(([,v]) => v !== '—' && v !== null && v !== undefined);
-  const html = `
-    <div class="modal-title">${escapeHtml(u.name)}</div>
-    <div class="modal-summary">
-      ${rows.map(([k,v])=>`<div class="ms-row"><span>${escapeHtml(k)}</span><b>${escapeHtml(String(v))}</b></div>`).join("")}
-    </div>
-    <div class="modal-actions"><button type="button" class="btn-secondary" id="admProfileClose">Close</button></div>
-  `;
-  openModal(html);
-  document.getElementById("admProfileClose").addEventListener("click", closeModal);
-}
-
-/* Negotiations — every offer thread, both parties, with a force-cancel
-   for anything stuck. */
-async function renderAdminNegotiations(){
-  const body = document.getElementById("adminAllNegsBody");
-  if(!body) return;
-  let negs;
-  try{ negs = (await api.adminAllNegotiations()).negotiations; }
-  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="5">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`; return; }
-  document.getElementById("admNegsTotal").textContent = negs.length;
-  if(negs.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="5">${i18n('admin.allLoadsEmpty')}</td></tr>`;
-    return;
-  }
-  body.innerHTML = negs.map(n=>{
-    const offers = JSON.parse(n.offers_json||'[]');
-    const latest = offers[offers.length-1];
-    return `
-    <tr>
-      <td>${escapeHtml(n.shipper_name)}<div class="muted" style="font-size:0.78rem;">${escapeHtml(n.shipper_email)}</div></td>
-      <td>${escapeHtml(n.carrier_name)}<div class="muted" style="font-size:0.78rem;">${escapeHtml(n.carrier_email)}</div></td>
-      <td class="nums">${latest ? latest.price.toLocaleString()+" EGP" : "—"}</td>
-      <td><span class="status-badge ${n.status==='Accepted'?'Active':n.status==='Declined'?'Rejected':'Pending'}">${escapeHtml(n.status)}</span></td>
-      <td>${n.status==='Pending' ? `<button type="button" class="btn-remove" data-adm-cancel-neg="${n.id}">${i18n('admin.cancel')}</button>` : ""}</td>
-    </tr>
-  `;}).join("");
-  body.querySelectorAll('[data-adm-cancel-neg]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{ await api.adminCancelNegotiation(btn.dataset.admCancelNeg); showToast('Negotiation closed.'); renderAdminNegotiations(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-}
-
-/* All Invoices — every invoice regardless of type/status, with a manual
-   mark-paid for anything settled outside the receipt-upload flow. */
-async function renderAdminAllInvoices(){
-  const body = document.getElementById("adminAllInvoicesBody");
-  if(!body) return;
-  let invs;
-  try{ invs = (await api.adminAllInvoices()).invoices; }
-  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="6">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`; return; }
-  document.getElementById("admInvoicesTotal").textContent = invs.length;
-  if(invs.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="6">${i18n('billing.empty')}</td></tr>`;
-    return;
-  }
-  body.innerHTML = invs.map(inv=>`
-    <tr>
-      <td class="nums muted">${escapeHtml(inv.invoice_no)}</td>
-      <td>${escapeHtml(inv.party_name||"—")}</td>
-      <td class="muted">${inv.kind==='platform_fee' ? 'Access fee' : escapeHtml(inv.role)}</td>
-      <td class="nums"><b>${inv.amount.toLocaleString()} EGP</b></td>
-      <td><span class="status-badge ${inv.status==='Paid'?'Active':'Pending'}">${escapeHtml(inv.status)}</span></td>
-      <td>${inv.status!=='Paid' ? `<button type="button" class="btn-primary" style="padding:8px 16px;font-size:0.84rem;" data-adm-mark-paid="${inv.id}">${i18n('admin.markPaid')}</button>` : ""}</td>
-    </tr>
-  `).join("");
-  body.querySelectorAll('[data-adm-mark-paid]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{ await api.adminMarkInvoicePaid(btn.dataset.admMarkPaid); showToast('Marked paid.'); renderAdminAllInvoices(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-}
-
-/* Site settings — pioneer slot count and the carrier-fee toggle, editable
-   without a code change or redeploy. */
-async function renderAdminSettings(){
-  const panel = document.getElementById("adminSettingsPanel");
-  if(!panel) return;
-  let settings;
-  try{ settings = (await api.getSettings()).settings; }
-  catch(e){ panel.innerHTML = `<p class="detail-note-small">Could not reach the server: ${escapeHtml(e.message)}</p>`; return; }
-  panel.innerHTML = `
-    <div class="field"><label for="admSettingPioneerSlots">Founding Shipper slots</label><input type="number" id="admSettingPioneerSlots" min="0" value="${escapeHtml(settings.pioneer_max_slots)}"></div>
-    <div class="field">
-      <label><input type="checkbox" id="admSettingCarrierFee" ${settings.carrier_requires_fee==='true'?'checked':''}> Require carriers to pay an access fee too (off = free 30-day trial, as today)</label>
-    </div>
-    <button type="button" class="btn-primary" id="admSettingsSave">Save settings</button>
-    <div class="auth-msg" id="admSettingsMsg"></div>
-  `;
-  document.getElementById("admSettingsSave").addEventListener("click", async ()=>{
-    const msgEl = document.getElementById("admSettingsMsg");
-    try{
-      await api.adminSetSetting('pioneer_max_slots', document.getElementById("admSettingPioneerSlots").value);
-      await api.adminSetSetting('carrier_requires_fee', document.getElementById("admSettingCarrierFee").checked ? 'true' : 'false');
-      showToast('Settings saved.');
-      msgEl.textContent = "";
-      await syncPioneerStatusFromServer();
-    }catch(e){ msgEl.textContent = e.message; msgEl.style.display = "block"; }
-  });
-}
-
 function serverUserToAdminEntry(u){
   return {
     role: u.role.toUpperCase(), email: u.email, id: u.id,
@@ -7229,13 +6501,8 @@ async function renderAdminPanel(){
   if(!adminLoggedIn) return;
   renderAdminStatusTabs();
   renderPaymentVerifications();
-  renderFeePaymentVerifications();
   renderAdminAllLoads();
   renderAdminAllTrucks();
-  renderAdminAllUsers();
-  renderAdminNegotiations();
-  renderAdminAllInvoices();
-  renderAdminSettings();
 
   const roleFilterVal = document.getElementById("adminRoleFilter").value;
   adminRoleFilter = roleFilterVal;
@@ -7277,10 +6544,7 @@ async function renderAdminPanel(){
       : `N-ID: ${escapeHtml(rec.nationalId||"—")}<br>Fleet: ${escapeHtml(String(rec.fleetCount||"—"))} trucks`;
     let actionsHtml = "";
     if(rec.verificationStatus==="PENDING"){
-      const setFeeBtn = entry.role==="SHIPPER" && !rec.isPioneerShipper
-        ? ` <button type="button" class="btn-secondary" data-adm-setfee="${entry.id}" data-adm-name="${escapeHtml(rec.name)}">${i18n('admin.setFee')}</button>`
-        : "";
-      actionsHtml = `<button type="button" class="btn-primary" style="padding:8px 16px;font-size:0.84rem;" data-adm-approve="${entry.id}">${i18n('admin.approve')}</button> <button type="button" class="btn-remove" data-adm-reject="${entry.id}" data-adm-name="${escapeHtml(rec.name)}">${i18n('admin.reject')}</button>${setFeeBtn}`;
+      actionsHtml = `<button type="button" class="btn-primary" style="padding:8px 16px;font-size:0.84rem;" data-adm-approve="${entry.id}">${i18n('admin.approve')}</button> <button type="button" class="btn-remove" data-adm-reject="${entry.id}" data-adm-name="${escapeHtml(rec.name)}">${i18n('admin.reject')}</button>`;
     } else {
       const link = adminWhatsAppLink(entry, rec.verificationStatus==="APPROVED"?"APPROVE":"REJECT");
       actionsHtml = link ? `<a href="${link}" target="_blank" rel="noopener noreferrer" class="company-link">Notify via WhatsApp</a>` : `<span class="muted">No phone on file</span>`;
@@ -7301,9 +6565,6 @@ async function renderAdminPanel(){
   });
   body.querySelectorAll('[data-adm-reject]').forEach(btn=>{
     btn.addEventListener('click', ()=> openAdminRejectModal(btn.dataset.admReject, btn.dataset.admName));
-  });
-  body.querySelectorAll('[data-adm-setfee]').forEach(btn=>{
-    btn.addEventListener('click', ()=> openAdminSetFeeModal(btn.dataset.admSetfee, btn.dataset.admName));
   });
   body.querySelectorAll('[data-adm-view]').forEach(btn=>{
     btn.addEventListener('click', ()=> openAdminDocModal(btn.dataset.admView));
@@ -7386,59 +6647,6 @@ function renderPaymentVerifications(){
   });
 }
 
-/* Real, backend-wired — unlike the panel above, which still reads from
-   the local, not-yet-connected invoices array. This is what actually
-   activates a shipper's account once admin confirms their InstaPay
-   receipt. */
-async function renderFeePaymentVerifications(){
-  const body = document.getElementById("adminFeeVerifBody");
-  if(!body) return;
-  let rows;
-  try{
-    const res = await api.adminPaymentVerifications();
-    rows = (res.invoices||[]).filter(i => i.kind === 'platform_fee');
-  }catch(e){
-    body.innerHTML = `<tr class="empty-row"><td colspan="5">Could not reach the server: ${escapeHtml(e.message)}</td></tr>`;
-    return;
-  }
-  if(rows.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="5">${i18n('billing.empty')}</td></tr>`;
-    return;
-  }
-  body.innerHTML = rows.map(inv => `
-    <tr>
-      <td class="nums muted">${escapeHtml(inv.invoice_no)}</td>
-      <td>${escapeHtml(inv.party_name||"—")}</td>
-      <td class="nums"><b>${inv.amount.toLocaleString()} EGP</b></td>
-      <td><a href="#" data-view-fee-doc="${inv.receipt_document_id}" class="company-link">📎 View receipt</a></td>
-      <td><button type="button" class="btn-primary" style="padding:8px 16px;font-size:0.84rem;" data-confirm-fee="${inv.id}">${i18n('settle.confirmSettled')}</button></td>
-    </tr>
-  `).join("");
-  body.querySelectorAll('[data-view-fee-doc]').forEach(a=>{
-    a.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      try{
-        const res = await fetch(`/api/documents/${a.dataset.viewFeeDoc}/file`, {headers:{Authorization:'Bearer '+authToken}});
-        if(!res.ok) throw new Error('Could not load the receipt.');
-        const blob = await res.blob();
-        window.open(URL.createObjectURL(blob), '_blank');
-      }catch(err){ showToast(err.message, 'err'); }
-    });
-  });
-  body.querySelectorAll('[data-confirm-fee]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{
-        await api.adminConfirmSettled(btn.dataset.confirmFee);
-        showToast('Payment confirmed — the shipper\'s account is now active.');
-        renderFeePaymentVerifications();
-        renderAdminPanel();
-      }catch(e){
-        showToast(`Could not confirm: ${e.message}`, 'err');
-      }
-    });
-  });
-}
-
 function openAdminRejectModal(userId, name){
   const html = `
     <div class="modal-title">Reason for Rejection</div>
@@ -7462,36 +6670,6 @@ function openAdminRejectModal(userId, name){
     }
     closeModal();
     renderAdminPanel();
-  });
-}
-
-function openAdminSetFeeModal(userId, name){
-  const html = `
-    <div class="modal-title">Set Access Fee</div>
-    <p class="modal-sub">Set a custom platform access fee for ${escapeHtml(name)}. They'll see this amount and pay via InstaPay, then upload a receipt for you to confirm.</p>
-    <div class="field"><label for="admFeeAmount">Amount (EGP)</label><input type="number" id="admFeeAmount" min="1" placeholder="e.g. 750"></div>
-    <div class="field"><label for="admFeeNote">Payment instructions (shown to the shipper)</label><textarea id="admFeeNote" rows="3" placeholder="e.g. Pay via InstaPay to 01099998888"></textarea></div>
-    <div class="auth-msg" id="admFeeMsg"></div>
-    <div class="modal-actions">
-      <button type="button" class="btn-secondary" id="admFeeCancel">Cancel</button>
-      <button type="button" class="btn-primary" id="admFeeConfirm">Set fee</button>
-    </div>
-  `;
-  openModal(html);
-  document.getElementById("admFeeCancel").addEventListener("click", closeModal);
-  document.getElementById("admFeeConfirm").addEventListener("click", async ()=>{
-    const amount = parseInt(document.getElementById("admFeeAmount").value, 10);
-    const note = document.getElementById("admFeeNote").value.trim();
-    const msgEl = document.getElementById("admFeeMsg");
-    if(!amount || amount <= 0){ msgEl.textContent = "Enter a valid amount."; msgEl.style.display = "block"; return; }
-    try{
-      await api.setFee(userId, amount, note);
-      showToast(`Fee of ${amount.toLocaleString()} EGP set for ${name}.`);
-      closeModal();
-      renderAdminPanel();
-    }catch(e){
-      msgEl.textContent = e.message; msgEl.style.display = "block";
-    }
   });
 }
 
@@ -7844,16 +7022,6 @@ function settlementBadgeHtml(inv){
 function renderBillingPanels(){
   renderBillingFor('carrier');
   renderBillingFor('shipper');
-  // Real invoice/ready-to-invoice data is fetched in the background and
-  // merged in — render again once it lands, same pattern as loads/trucks/
-  // negotiations elsewhere. Billing renders synchronously first with
-  // whatever's cached locally so the panel never sits empty while waiting.
-  if(authToken){
-    Promise.all([syncMyInvoicesFromServer(), syncReadyToInvoiceFromServer()]).then(()=>{
-      renderBillingFor('carrier');
-      renderBillingFor('shipper');
-    });
-  }
 }
 
 let selectedReadyLoads = new Set();
@@ -7911,16 +7079,12 @@ function renderReadyToInvoice(){
     });
   }
   const genBtn = document.getElementById("generateFreightInvoiceBtn");
-  if(genBtn) genBtn.addEventListener("click", async ()=>{
-    genBtn.disabled = true;
-    const inv = await generateConsolidatedShipperInvoice([...selectedReadyLoads]);
-    genBtn.disabled = false;
+  if(genBtn) genBtn.addEventListener("click", ()=>{
+    const inv = generateConsolidatedShipperInvoice([...selectedReadyLoads]);
     if(inv){
-      invoices.unshift(inv);
       showToast(`${i18n('billing.invoiceGeneratedToast')} — ${inv.amount.toLocaleString()} EGP`);
       logActivity('shipper', `🧾 ${i18n('billing.invoiceGeneratedToast')} (${inv.loadsIncluded.length} ${i18n('billing.loadsWord')}, ${inv.amount.toLocaleString()} EGP)`);
       selectedReadyLoads.clear();
-      await syncReadyToInvoiceFromServer();
       renderLoadData(); renderBillingPanels();
     }
   });
@@ -7972,16 +7136,12 @@ function renderTollsReady(){
     });
   }
   const genBtn = document.getElementById("generateTollsInvoiceBtn");
-  if(genBtn) genBtn.addEventListener("click", async ()=>{
-    genBtn.disabled = true;
-    const inv = await generateConsolidatedTollsInvoice([...selectedTollsLoads]);
-    genBtn.disabled = false;
+  if(genBtn) genBtn.addEventListener("click", ()=>{
+    const inv = generateConsolidatedTollsInvoice([...selectedTollsLoads]);
     if(inv){
-      invoices.unshift(inv);
       showToast(`${i18n('billing.tollsSheetGeneratedToast')} — ${inv.amount.toLocaleString()} EGP`);
       logActivity('shipper', `🧾 ${i18n('billing.tollsSheetGeneratedToast')} (${inv.loadsIncluded.length} ${i18n('billing.loadsWord')}, ${inv.amount.toLocaleString()} EGP)`);
       selectedTollsLoads.clear();
-      await syncReadyToInvoiceFromServer();
       renderLoadData(); renderBillingPanels();
     }
   });
@@ -8115,7 +7275,6 @@ function openUploadReceiptModal(invId){
   const inv = invoices.find(i=>i.id===invId);
   if(!inv) return;
   _pendingReceiptFileName = "";
-  let _pendingReceiptFile = null;
   const html = `
     <div class="modal-title">${i18n('settle.uploadReceipt')}</div>
     <p class="modal-sub">${i18n('settle.uploadReceiptSub')}</p>
@@ -8125,35 +7284,21 @@ function openUploadReceiptModal(invId){
       <div class="dz-filename" id="receiptFileName"></div>
       <input type="file" id="receiptFile" accept="image/*,.pdf">
     </div>
-    <div class="auth-msg" id="receiptUploadMsg"></div>
     <div class="modal-actions">
       <button type="button" class="btn-secondary" id="receiptCancelBtn">${i18n('btn.cancel')}</button>
       <button type="button" class="btn-primary" id="receiptSubmitBtn">${i18n('settle.uploadReceipt')}</button>
     </div>
   `;
   openModal(html);
-  wireDropzone("receiptDropzone", "receiptFile", "receiptFileName", (f)=>{ _pendingReceiptFileName = f ? f.name : ""; _pendingReceiptFile = f || null; });
+  wireDropzone("receiptDropzone", "receiptFile", "receiptFileName", (f)=>{ _pendingReceiptFileName = f ? f.name : ""; });
   document.getElementById("receiptCancelBtn").addEventListener("click", closeModal);
-  document.getElementById("receiptSubmitBtn").addEventListener("click", async ()=>{
-    const msgEl = document.getElementById("receiptUploadMsg");
-    if(!_pendingReceiptFile){ msgEl.textContent = i18n('fee.receiptRequired'); msgEl.style.display = "block"; return; }
-    const btn = document.getElementById("receiptSubmitBtn");
-    btn.disabled = true;
-    try{
-      if(inv._serverId){
-        const base64Data = await fileToBase64(_pendingReceiptFile);
-        await api.uploadInvoiceReceipt(inv._serverId, _pendingReceiptFile.name, _pendingReceiptFile.type, base64Data);
-      }
-      inv.settlementStatus = "In Verification";
-      inv.receiptFileName = _pendingReceiptFileName;
-      showToast(i18n('settle.receiptSubmittedToast'));
-      logActivity('carrier', `🧾 ${i18n('settle.receiptSubmittedToast')} — ${inv.invoiceNo}`);
-      closeModal();
-      renderBillingPanels();
-    }catch(e){
-      btn.disabled = false;
-      msgEl.textContent = e.message; msgEl.style.display = "block";
-    }
+  document.getElementById("receiptSubmitBtn").addEventListener("click", ()=>{
+    inv.settlementStatus = "In Verification";
+    inv.receiptFileName = _pendingReceiptFileName;
+    showToast(i18n('settle.receiptSubmittedToast'));
+    logActivity('carrier', `🧾 ${i18n('settle.receiptSubmittedToast')} — ${inv.invoiceNo}`);
+    closeModal();
+    renderBillingPanels();
   });
 }
 
@@ -8405,148 +7550,6 @@ ${invoiceDoc.outerHTML}
   showToast(i18n('billing.htmlDownloadedToast'));
 }
 
-/* Generic version of the two download functions above — same reliable
-   Blob mechanism, same .invoice-doc styling for visual consistency, just
-   parameterized by a title/filename instead of assuming an invoice
-   object, so the shipper document and driver settlement views below can
-   reuse the exact same download behavior without duplicating it. */
-function downloadDocHtml(title, fileName){
-  const docEl = document.querySelector(".invoice-doc");
-  if(!docEl) return;
-  const styleBlock = Array.from(document.querySelectorAll("style")).map(s=>s.outerHTML).join("\n");
-  const dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-  const fullHtml = `<!DOCTYPE html>
-<html dir="${dir}" lang="${currentLang}">
-<head><meta charset="UTF-8"><title>${escapeHtml(title)} — LOAD MASR</title>${styleBlock}
-<style>body{background:#fff;padding:24px;}</style></head>
-<body>${docEl.outerHTML}</body></html>`;
-  const blob = new Blob([fullHtml], {type:"text/html;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = `${fileName}.html`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast(i18n('billing.htmlDownloadedToast'));
-}
-function downloadDocWord(title, fileName){
-  const docEl = document.querySelector(".invoice-doc");
-  if(!docEl) return;
-  const styleBlock = Array.from(document.querySelectorAll("style")).map(s=>s.innerHTML).join("\n");
-  const dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-  const wordHtml = `<!DOCTYPE html>
-<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40" dir="${dir}" lang="${currentLang}">
-<head><meta charset="UTF-8"><title>${escapeHtml(title)} — LOAD MASR</title>
-<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
-<style>${styleBlock}
-body{background:#fff;padding:24px;}</style></head>
-<body>${docEl.outerHTML}</body></html>`;
-  const blob = new Blob(["\ufeff"+wordHtml], {type:"application/msword;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = `${fileName}.doc`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast(i18n('billing.wordDownloadedToast'));
-}
-
-/* A simple document the carrier can send to the factory — what's owed,
-   for which route, on which trip. Built straight from the shipment
-   record, since that's the only real data behind it (there's no
-   registered shipper account to generate this from the other side). */
-function openShipperDocModal(shipmentId){
-  const s = _opsShipmentsCache[shipmentId];
-  if(!s) return;
-  const dateStr = new Date(s.created_at).toISOString().slice(0,10);
-  const html = `
-    <div class="invoice-doc">
-      <div class="invoice-head">
-        <div class="invoice-brand">
-          <svg viewBox="0 0 24 24" width="30" height="30" fill="var(--primary-dim)"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-1.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.97 2.5H17z"/></svg>
-          <span class="logo-text">LOAD<span class="logo-text-highlight">MASR</span></span>
-        </div>
-        <div class="invoice-meta">
-          <div><b>${i18n('ops.tripRef')}:</b> ${escapeHtml(s.id)}</div>
-          <div><b>${i18n('ops.date')}:</b> ${dateStr}</div>
-        </div>
-      </div>
-      <div class="invoice-parties">
-        <div><div class="muted" style="font-size:0.76rem;">${i18n('billing.billTo')}</div><b>${escapeHtml(s.shipper_name)}</b>${s.shipper_phone?`<div class="nums muted">${escapeHtml(s.shipper_phone)}</div>`:""}</div>
-        <div><div class="muted" style="font-size:0.76rem;">${i18n('req.lane')}</div><b>${escapeHtml(laneLabel(s.origin,s.origin_area))} ▸ ${escapeHtml(laneLabel(s.dest,s.dest_area))}</b>${s.cargo?`<div class="muted">${escapeHtml(s.cargo)}</div>`:""}</div>
-      </div>
-      <table class="invoice-table">
-        <thead><tr><th>${i18n('billing.lineItem')}</th><th class="nums">${i18n('col.rate')}</th></tr></thead>
-        <tbody>
-          <tr class="invoice-total-row"><td>${i18n('ops.amountDue')}</td><td class="nums">${s.rate ? s.rate.toLocaleString()+" EGP" : "—"}</td></tr>
-        </tbody>
-      </table>
-      <div class="invoice-signoff">
-        <div class="invoice-stamp-box">${i18n('billing.stamp')}</div>
-        <div class="invoice-stamp-box">${i18n('billing.signature')}</div>
-      </div>
-    </div>
-    <div class="modal-actions no-print">
-      <button type="button" class="btn-secondary" id="opsDocCloseBtn">${i18n('ops.close')}</button>
-      <button type="button" class="btn-secondary" id="opsDocHtmlBtn">${i18n('billing.downloadHtml')}</button>
-      <button type="button" class="btn-primary" id="opsDocWordBtn">${i18n('billing.downloadWord')}</button>
-    </div>
-  `;
-  openModal(html);
-  document.getElementById("opsDocCloseBtn").addEventListener("click", closeModal);
-  document.getElementById("opsDocHtmlBtn").addEventListener("click", ()=> downloadDocHtml(i18n('ops.shipperDocTitle'), `shipment-${s.id}`));
-  document.getElementById("opsDocWordBtn").addEventListener("click", ()=> downloadDocWord(i18n('ops.shipperDocTitle'), `shipment-${s.id}`));
-}
-
-/* What replaces the Excel sheet at the moment of truth — advance given,
-   what was actually spent, and the balance, computed server-side the
-   whole way through (see /api/carrier-shipments/mine), never trusted
-   from anything typed on this screen. */
-function openDriverSettlementModal(shipmentId){
-  const s = _opsShipmentsCache[shipmentId];
-  if(!s || s.actual_tolls===null) return;
-  const dateStr = s.delivered_at ? new Date(s.delivered_at).toISOString().slice(0,10) : "—";
-  const balance = s.driver_balance;
-  const balanceLabel = balance >= 0 ? i18n('ops.driverOwes') : i18n('ops.carrierOwes');
-  const html = `
-    <div class="invoice-doc">
-      <div class="invoice-head">
-        <div class="invoice-brand">
-          <svg viewBox="0 0 24 24" width="30" height="30" fill="var(--primary-dim)"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-1.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.97 2.5H17z"/></svg>
-          <span class="logo-text">LOAD<span class="logo-text-highlight">MASR</span></span>
-        </div>
-        <div class="invoice-meta">
-          <div><b>${i18n('ops.tripRef')}:</b> ${escapeHtml(s.id)}</div>
-          <div><b>${i18n('ops.date')}:</b> ${dateStr}</div>
-        </div>
-      </div>
-      <div class="invoice-parties">
-        <div><div class="muted" style="font-size:0.76rem;">${i18n('ops.driverName')}</div><b>${escapeHtml(s.driver_name||"—")}</b>${s.driver_phone?`<div class="nums muted">${escapeHtml(s.driver_phone)}</div>`:""}</div>
-        <div><div class="muted" style="font-size:0.76rem;">${i18n('req.lane')}</div><b>${escapeHtml(laneLabel(s.origin,s.origin_area))} ▸ ${escapeHtml(laneLabel(s.dest,s.dest_area))}</b></div>
-      </div>
-      <table class="invoice-table">
-        <thead><tr><th>${i18n('billing.lineItem')}</th><th class="nums">${i18n('col.rate')}</th></tr></thead>
-        <tbody>
-          <tr><td>${i18n('ops.advanceGiven')}</td><td class="nums">${s.advance_amount.toLocaleString()} EGP</td></tr>
-          <tr><td>${i18n('ops.tollsSpent')}</td><td class="nums">${s.actual_tolls.toLocaleString()} EGP</td></tr>
-          <tr class="invoice-total-row"><td>${balanceLabel}</td><td class="nums">${Math.abs(balance).toLocaleString()} EGP</td></tr>
-        </tbody>
-      </table>
-      <div class="invoice-signoff">
-        <div class="invoice-stamp-box">${i18n('billing.signature')}</div>
-        <div class="invoice-stamp-box">${i18n('billing.signature')}</div>
-      </div>
-    </div>
-    <div class="modal-actions no-print">
-      <button type="button" class="btn-secondary" id="opsDocCloseBtn">${i18n('ops.close')}</button>
-      <button type="button" class="btn-secondary" id="opsDocHtmlBtn">${i18n('billing.downloadHtml')}</button>
-      <button type="button" class="btn-primary" id="opsDocWordBtn">${i18n('billing.downloadWord')}</button>
-    </div>
-  `;
-  openModal(html);
-  document.getElementById("opsDocCloseBtn").addEventListener("click", closeModal);
-  document.getElementById("opsDocHtmlBtn").addEventListener("click", ()=> downloadDocHtml(i18n('ops.driverSettlementTitle'), `settlement-${s.id}`));
-  document.getElementById("opsDocWordBtn").addEventListener("click", ()=> downloadDocWord(i18n('ops.driverSettlementTitle'), `settlement-${s.id}`));
-}
-
 /* ---------- Driver Mobile POD Portal ---------- */
 /* Maps the driver-facing 3-tap labels to the same trackingStage values the
    carrier dashboard already uses, so both views stay in sync automatically. */
@@ -8671,190 +7674,6 @@ function copyDriverLink(loadId){
   }
 }
 
-function opsStatusLabel(s){
-  const map = {Assigned:"status.Assigned", "In Transit":"status.InTransit", Delivered:"status.Delivered", Settled:"status.Settled"};
-  return map[s] ? i18n(map[s]) : s;
-}
-function opsStatusBadgeClass(s){
-  return {Assigned:"Pending", "In Transit":"Pending", Delivered:"Active", Settled:"Active"}[s] || "Pending";
-}
-let _opsDriversCache = [];
-async function renderOpsDrivers(){
-  const body = document.getElementById("opsDriversBody");
-  const select = document.getElementById("opsDriverSelect");
-  if(!body || !carrierAuth.loggedIn) return;
-  let drivers;
-  try{ drivers = (await api.myDrivers()).drivers; }
-  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="4">${escapeHtml(e.message)}</td></tr>`; return; }
-  _opsDriversCache = drivers;
-  if(select){
-    const current = select.value;
-    select.innerHTML = `<option value="">—</option>` + drivers.filter(d=>d.active).map(d=>`<option value="${d.id}">${escapeHtml(d.name)}</option>`).join("");
-    select.value = current;
-  }
-  if(drivers.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="4">${i18n('ops.noDriver')}</td></tr>`;
-    return;
-  }
-  body.innerHTML = drivers.map(d=>`
-    <tr>
-      <td>${escapeHtml(d.name)}</td>
-      <td class="nums muted">${escapeHtml(d.phone||"—")}</td>
-      <td><span class="status-badge ${d.active?'Active':'Rejected'}">${d.active?i18n('ops.active'):i18n('ops.inactive')}</span></td>
-      <td><button type="button" class="btn-secondary" data-toggle-driver="${d.id}" data-active="${d.active}">${d.active?i18n('ops.deactivate'):i18n('ops.reactivate')}</button></td>
-    </tr>
-  `).join("");
-  body.querySelectorAll('[data-toggle-driver]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const active = btn.dataset.active === '1' || btn.dataset.active === 'true';
-      try{ await api.updateDriver(btn.dataset.toggleDriver, {active: !active}); renderOpsDrivers(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-}
-
-let _opsShipmentsCache = {};
-async function renderOpsShipments(){
-  const body = document.getElementById("opsShipmentsBody");
-  if(!body || !carrierAuth.loggedIn) return;
-  let shipments;
-  try{ shipments = (await api.myShipments()).shipments; }
-  catch(e){ body.innerHTML = `<tr class="empty-row"><td colspan="10">${escapeHtml(e.message)}</td></tr>`; return; }
-  _opsShipmentsCache = {};
-  shipments.forEach(s=>{ _opsShipmentsCache[s.id] = s; });
-  if(shipments.length===0){
-    body.innerHTML = `<tr class="empty-row"><td colspan="10">${i18n('billing.empty')}</td></tr>`;
-    return;
-  }
-  body.innerHTML = shipments.map(s=>{
-    let balanceHtml = `<span class="muted">${i18n('ops.pending')}</span>`;
-    if(s.driver_balance !== null){
-      balanceHtml = s.driver_balance >= 0
-        ? `${i18n('ops.driverOwes')} <b>${s.driver_balance.toLocaleString()} EGP</b>`
-        : `${i18n('ops.carrierOwes')} <b>${Math.abs(s.driver_balance).toLocaleString()} EGP</b>`;
-    }
-    let actionsHtml = "";
-    if(s.status === 'Assigned') actionsHtml = `<button type="button" class="btn-secondary" data-mark-transit="${s.id}">${i18n('ops.markInTransit')}</button>`;
-    else if(s.status === 'In Transit') actionsHtml = `<button type="button" class="btn-primary" style="padding:8px 16px;font-size:0.84rem;" data-record-delivery="${s.id}">${i18n('ops.markDelivered')}</button>`;
-    else if(s.status === 'Delivered') actionsHtml = `<button type="button" class="btn-secondary" data-mark-settled="${s.id}">${i18n('ops.markSettled')}</button>`;
-    const docsHtml = `
-      <button type="button" class="company-link" style="background:none;border:none;cursor:pointer;" data-view-shipper-doc="${s.id}">${i18n('ops.shipperDoc')}</button>
-      ${s.actual_tolls!==null ? `<button type="button" class="company-link" style="background:none;border:none;cursor:pointer;" data-view-driver-settlement="${s.id}">${i18n('ops.driverSettlement')}</button>` : ""}
-    `;
-    return `
-    <tr>
-      <td>${escapeHtml(s.shipper_name)}<div class="muted" style="font-size:0.78rem;">${escapeHtml(s.shipper_phone||"")}</div></td>
-      <td>${escapeHtml(laneLabel(s.origin,s.origin_area))} ▸ ${escapeHtml(laneLabel(s.dest,s.dest_area))}</td>
-      <td>${escapeHtml(s.driver_name||i18n('ops.noDriver'))}</td>
-      <td class="nums">${s.rate ? s.rate.toLocaleString()+" EGP" : "—"}</td>
-      <td class="nums">${s.advance_amount.toLocaleString()} EGP</td>
-      <td class="nums">${s.actual_tolls!==null ? s.actual_tolls.toLocaleString()+" EGP" : "—"}</td>
-      <td>${balanceHtml}</td>
-      <td><span class="status-badge ${opsStatusBadgeClass(s.status)}">${opsStatusLabel(s.status)}</span></td>
-      <td>${docsHtml}</td>
-      <td>${actionsHtml}</td>
-    </tr>
-  `;}).join("");
-  body.querySelectorAll('[data-view-shipper-doc]').forEach(btn=>{
-    btn.addEventListener('click', ()=> openShipperDocModal(btn.dataset.viewShipperDoc));
-  });
-  body.querySelectorAll('[data-view-driver-settlement]').forEach(btn=>{
-    btn.addEventListener('click', ()=> openDriverSettlementModal(btn.dataset.viewDriverSettlement));
-  });
-  body.querySelectorAll('[data-mark-transit]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{ await api.updateShipment(btn.dataset.markTransit, {status:'In Transit'}); renderOpsShipments(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-  body.querySelectorAll('[data-mark-settled]').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{ await api.updateShipment(btn.dataset.markSettled, {status:'Settled'}); showToast(i18n('ops.markSettled')); renderOpsShipments(); }
-      catch(e){ showToast(e.message, 'err'); }
-    });
-  });
-  body.querySelectorAll('[data-record-delivery]').forEach(btn=>{
-    btn.addEventListener('click', ()=> openRecordDeliveryModal(btn.dataset.recordDelivery));
-  });
-}
-
-function openRecordDeliveryModal(shipmentId){
-  const html = `
-    <div class="modal-title">${i18n('ops.recordTollsTitle')}</div>
-    <p class="modal-sub">${i18n('ops.recordTollsSub')}</p>
-    <div class="field"><label for="opsActualTolls">${i18n('ops.actualTolls')}</label><input type="number" id="opsActualTolls" min="0" placeholder="e.g. 1200"></div>
-    <div class="auth-msg" id="opsDeliveryMsg"></div>
-    <div class="modal-actions">
-      <button type="button" class="btn-secondary" id="opsDeliveryCancel">${i18n('btn.cancel')}</button>
-      <button type="button" class="btn-primary" id="opsDeliveryConfirm">${i18n('ops.confirm')}</button>
-    </div>
-  `;
-  openModal(html);
-  document.getElementById("opsDeliveryCancel").addEventListener("click", closeModal);
-  document.getElementById("opsDeliveryConfirm").addEventListener("click", async ()=>{
-    const val = document.getElementById("opsActualTolls").value;
-    const msgEl = document.getElementById("opsDeliveryMsg");
-    if(val === ""){ msgEl.textContent = i18n('ops.fillRequired'); msgEl.style.display = "block"; return; }
-    try{
-      await api.updateShipment(shipmentId, {status:'Delivered', actualTolls: parseInt(val,10)});
-      showToast(i18n('ops.markDelivered'));
-      closeModal();
-      renderOpsShipments();
-    }catch(e){ msgEl.textContent = e.message; msgEl.style.display = "block"; }
-  });
-}
-
-async function renderCarrierOperations(){
-  await Promise.all([renderOpsDrivers(), renderOpsShipments()]);
-}
-
-document.getElementById("opsAddDriverBtn").addEventListener("click", async ()=>{
-  const name = document.getElementById("opsDriverName").value.trim();
-  const phone = document.getElementById("opsDriverPhone").value.trim();
-  if(!name){ showToast(i18n('ops.nameRequired'), 'err'); return; }
-  try{
-    await api.addDriver(name, phone);
-    document.getElementById("opsDriverName").value = "";
-    document.getElementById("opsDriverPhone").value = "";
-    showToast(i18n('ops.addDriver'));
-    renderOpsDrivers();
-  }catch(e){ showToast(e.message, 'err'); }
-});
-
-document.getElementById("opsLogShipmentBtn").addEventListener("click", async ()=>{
-  const shipperName = document.getElementById("opsShipperName").value.trim();
-  const shipperPhone = document.getElementById("opsShipperPhone").value.trim();
-  const driverId = document.getElementById("opsDriverSelect").value;
-  const origin = document.getElementById("opsOrigin").value.trim();
-  const dest = document.getElementById("opsDest").value.trim();
-  const pickupDate = document.getElementById("opsPickupDate").value;
-  const cargo = document.getElementById("opsCargo").value.trim();
-  const rateVal = document.getElementById("opsRate").value;
-  const advanceVal = document.getElementById("opsAdvance").value;
-  const msgEl = document.getElementById("opsLogMsg");
-  if(!shipperName || !origin || !dest){
-    msgEl.textContent = i18n('ops.fillRequired');
-    msgEl.classList.add("err");
-    return;
-  }
-  try{
-    await api.logShipment({
-      shipperName, shipperPhone, origin, dest, pickupDate, cargo,
-      rate: rateVal?parseInt(rateVal,10):null, driverId: driverId||null,
-      advanceAmount: advanceVal?parseInt(advanceVal,10):0
-    });
-    msgEl.classList.remove("err");
-    msgEl.textContent = i18n('ops.shipmentLogged');
-    ["opsShipperName","opsShipperPhone","opsOrigin","opsDest","opsPickupDate","opsCargo","opsRate","opsAdvance"].forEach(id=>{ document.getElementById(id).value = ""; });
-    document.getElementById("opsDriverSelect").value = "";
-    renderOpsShipments();
-    setTimeout(()=>{msgEl.textContent="";},4000);
-  }catch(e){
-    msgEl.classList.add("err");
-    msgEl.textContent = e.message;
-  }
-});
-
 /* ---------- Init ---------- */
 renderTruckData();
 renderLoadData();
@@ -8862,7 +7681,6 @@ updateAuthView('carrier');
 updateAuthView('shipper');
 renderBillingPanels();
 checkDriverPortalRoute();
-restoreSessionFromStorage();
 </script>
 
 </body>

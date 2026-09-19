@@ -54,44 +54,9 @@ function rateLimit(req, bucket, { max, windowMs }) {
 function tripNo() { return String(Math.floor(100 + Math.random() * 900)); }
 function newId(prefix) { return `${prefix}_${crypto.randomBytes(6).toString('hex')}`; }
 
-/* ---------- SITE SETTINGS (admin-editable, DB-backed) ---------- */
-const SETTING_DEFAULTS = {
-  pioneer_max_slots: '17',
-  carrier_requires_fee: 'false' // when 'true', new carriers no longer auto-verify with a free trial — they go through the same admin-set-fee flow as non-pioneer shippers
-};
-function getSetting(key) {
-  const row = db.prepare('SELECT value FROM settings WHERE key = ?').get(key);
-  return row ? row.value : SETTING_DEFAULTS[key];
-}
-function setSetting(key, value) {
-  const now = Date.now();
-  db.prepare(`
-    INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)
-    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
-  `).run(key, String(value), now);
-}
-
-router.get('/api/settings', ({ sendJson }) => {
-  // Public — the frontend needs these before anyone's logged in (pioneer
-  // slot display, etc.), so this deliberately has no auth requirement.
-  const keys = Object.keys(SETTING_DEFAULTS);
-  const out = {};
-  keys.forEach(k => { out[k] = getSetting(k); });
-  sendJson(200, { settings: out });
-});
-
-router.post('/api/admin/settings', ({ req, body, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const { key, value } = body;
-  if (!key || !(key in SETTING_DEFAULTS)) throw new ApiError(400, `Unknown setting: ${key}`);
-  if (value === undefined || value === null || value === '') throw new ApiError(400, 'value is required.');
-  setSetting(key, value);
-  sendJson(200, { key, value: getSetting(key) });
-});
-
 /* ---------- AUTH ---------- */
 const PIONEER_CODE = 'PIONEER3';
-function pioneerMaxSlots() { return parseInt(getSetting('pioneer_max_slots'), 10) || 17; }
+const PIONEER_MAX_SLOTS = 3;
 
 router.post('/api/auth/signup', ({ req, body, sendJson }) => {
   rateLimit(req, 'signup', { max: 10, windowMs: 60 * 60 * 1000 }); // 10 signups/hour/IP — generous for real use, blocks spam scripts
@@ -115,7 +80,7 @@ router.post('/api/auth/signup', ({ req, body, sendJson }) => {
   if (role === 'shipper') {
     if (promoCode && promoCode.trim().toUpperCase() === PIONEER_CODE) {
       const pioneerCount = db.prepare('SELECT COUNT(*) as c FROM users WHERE is_pioneer_shipper = 1').get().c;
-      if (pioneerCount < pioneerMaxSlots()) {
+      if (pioneerCount < PIONEER_MAX_SLOTS) {
         isPioneer = 1; verified = 1; plan = 'Founding Shipper (Free)'; verificationStatus = 'APPROVED';
       }
       // If the code is valid but slots are gone, the account is created
@@ -123,15 +88,9 @@ router.post('/api/auth/signup', ({ req, body, sendJson }) => {
       // no pioneer perk).
     }
   } else {
-    if (getSetting('carrier_requires_fee') === 'true') {
-      // Same gate as a non-pioneer shipper — admin sets a fee, carrier
-      // pays and uploads a receipt, confirming it activates the account.
-      verified = 0; verificationStatus = 'PENDING';
-    } else {
-      // Default: carriers get a 30-day free Pro trial immediately, same as the original prototype.
-      verified = 1; verificationStatus = 'APPROVED'; plan = 'Pro (30-day free trial)';
-      isFreeTrialPro = 1; trialEndsAt = now + 30 * 24 * 60 * 60 * 1000;
-    }
+    // Carriers get a 30-day free Pro trial immediately, same as the prototype.
+    verified = 1; verificationStatus = 'APPROVED'; plan = 'Pro (30-day free trial)';
+    isFreeTrialPro = 1; trialEndsAt = now + 30 * 24 * 60 * 60 * 1000;
   }
 
   db.prepare(`
@@ -155,21 +114,17 @@ router.post('/api/auth/signup', ({ req, body, sendJson }) => {
 
 /* A regular (non-pioneer) shipper picks a plan after signup to activate
    their account — mirrors the frontend prototype's pricing-page step. */
-/* No longer auto-verifies — a non-pioneer shipper's account only
-   activates once an admin-set platform fee is actually paid and confirmed
-   (see /api/admin/shippers/:id/set-fee and the invoice/receipt flow).
-   This just records which plan they'd like, for the admin's reference. */
 router.post('/api/auth/select-plan', ({ req, body, sendJson }) => {
   const user = requireAuth(req, ['shipper']);
   if (!body.plan) throw new ApiError(400, 'plan is required.');
-  db.prepare("UPDATE users SET plan = ? WHERE id = ?").run(body.plan, user.id);
+  db.prepare("UPDATE users SET plan = ?, verified = 1, verification_status = 'APPROVED' WHERE id = ?").run(body.plan, user.id);
   sendJson(200, { user: publicUser(db.prepare('SELECT * FROM users WHERE id = ?').get(user.id)) });
 });
 
 /* Real, shared, atomic pioneer-slot count — not a client-guessed number. */
 router.get('/api/pioneer-status', ({ sendJson }) => {
   const count = db.prepare('SELECT COUNT(*) as c FROM users WHERE is_pioneer_shipper = 1').get().c;
-  sendJson(200, { slotsUsed: count, slotsRemaining: Math.max(0, pioneerMaxSlots() - count), maxSlots: pioneerMaxSlots() });
+  sendJson(200, { slotsUsed: count, slotsRemaining: Math.max(0, PIONEER_MAX_SLOTS - count), maxSlots: PIONEER_MAX_SLOTS });
 });
 
 router.post('/api/auth/login', ({ req, body, sendJson }) => {
@@ -178,9 +133,6 @@ router.post('/api/auth/login', ({ req, body, sendJson }) => {
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   if (!user || !verifyPassword(password, user.password_hash, user.password_salt)) {
     throw new ApiError(401, 'Incorrect email or password.');
-  }
-  if (user.account_status === 'SUSPENDED') {
-    throw new ApiError(403, 'This account has been suspended. Contact support for help.');
   }
   const token = createSession(user.id);
   sendJson(200, { user: publicUser(user), token });
@@ -200,21 +152,13 @@ router.get('/api/auth/me', ({ req, sendJson }) => {
 
 /* ---------- TRUCKS ---------- */
 router.get('/api/trucks', ({ sendJson }) => {
-  const rows = db.prepare(`
-    SELECT t.*, u.name as carrier_name, u.phone as carrier_phone, u.email as carrier_email
-    FROM trucks t JOIN users u ON t.carrier_id = u.id
-    WHERE t.status = 'Active' ORDER BY t.posted_at DESC
-  `).all();
+  const rows = db.prepare("SELECT * FROM trucks WHERE status = 'Active' ORDER BY posted_at DESC").all();
   sendJson(200, { trucks: rows });
 });
 
 router.get('/api/trucks/mine', ({ req, sendJson }) => {
   const user = requireAuth(req, ['carrier']);
-  const rows = db.prepare(`
-    SELECT t.*, u.name as carrier_name, u.phone as carrier_phone, u.email as carrier_email
-    FROM trucks t JOIN users u ON t.carrier_id = u.id
-    WHERE t.carrier_id = ? ORDER BY t.posted_at DESC
-  `).all(user.id);
+  const rows = db.prepare('SELECT * FROM trucks WHERE carrier_id = ? ORDER BY posted_at DESC').all(user.id);
   sendJson(200, { trucks: rows });
 });
 
@@ -253,141 +197,20 @@ router.delete('/api/trucks/:id', ({ req, params, sendJson }) => {
 
 /* ---------- LOADS ---------- */
 router.get('/api/loads', ({ sendJson }) => {
-  const rows = db.prepare(`
-    SELECT l.*, u.name as shipper_name, u.phone as shipper_phone, u.email as shipper_email,
-           bc.email as booked_by_carrier_email
-    FROM loads l JOIN users u ON l.shipper_id = u.id
-    LEFT JOIN users bc ON l.booked_by_carrier_id = bc.id
-    WHERE l.status = 'Active' ORDER BY l.posted_at DESC
-  `).all();
+  const rows = db.prepare("SELECT * FROM loads WHERE status = 'Active' ORDER BY posted_at DESC").all();
   sendJson(200, { loads: rows });
 });
 
 router.get('/api/loads/mine', ({ req, sendJson }) => {
   const user = requireAuth(req, ['shipper']);
-  const rows = db.prepare(`
-    SELECT l.*, u.name as shipper_name, u.phone as shipper_phone, u.email as shipper_email,
-           bc.email as booked_by_carrier_email
-    FROM loads l JOIN users u ON l.shipper_id = u.id
-    LEFT JOIN users bc ON l.booked_by_carrier_id = bc.id
-    WHERE l.shipper_id = ? ORDER BY l.posted_at DESC
-  `).all(user.id);
+  const rows = db.prepare('SELECT * FROM loads WHERE shipper_id = ? ORDER BY posted_at DESC').all(user.id);
   sendJson(200, { loads: rows });
 });
 
 router.get('/api/loads/booked', ({ req, sendJson }) => {
   const user = requireAuth(req, ['carrier']);
-  const rows = db.prepare(`
-    SELECT l.*, u.name as shipper_name, u.phone as shipper_phone, u.email as shipper_email
-    FROM loads l JOIN users u ON l.shipper_id = u.id
-    WHERE l.booked_by_carrier_id = ? AND l.status != 'Completed' ORDER BY l.posted_at DESC
-  `).all(user.id);
-  // Every row here is booked by the current user by definition (the WHERE
-  // clause above) — no extra join needed, just attach it directly.
-  rows.forEach(r => { r.booked_by_carrier_email = user.email; });
+  const rows = db.prepare("SELECT * FROM loads WHERE booked_by_carrier_id = ? AND status != 'Completed' ORDER BY posted_at DESC").all(user.id);
   sendJson(200, { loads: rows });
-});
-
-/* Completed loads a shipper can still pick for a consolidated freight
-   invoice or tolls sheet — each list is independent, since a load can be
-   in one freight invoice AND one tolls sheet, they're billed separately. */
-router.get('/api/loads/ready-to-invoice', ({ req, sendJson }) => {
-  const user = requireAuth(req, ['shipper']);
-  const rows = db.prepare(`
-    SELECT * FROM loads
-    WHERE shipper_id = ? AND status = 'Completed' AND rate IS NOT NULL AND shipper_freight_invoice_id IS NULL
-    ORDER BY posted_at DESC
-  `).all(user.id);
-  sendJson(200, { loads: rows });
-});
-
-router.get('/api/loads/ready-for-tolls', ({ req, sendJson }) => {
-  const user = requireAuth(req, ['shipper']);
-  const rows = db.prepare(`
-    SELECT * FROM loads
-    WHERE shipper_id = ? AND status = 'Completed' AND tolls > 0 AND shipper_tolls_invoice_id IS NULL
-    ORDER BY posted_at DESC
-  `).all(user.id);
-  sendJson(200, { loads: rows });
-});
-
-/* One invoice covering linehaul + VAT for several delivered loads at
-   once, picked by the shipper themselves — this is what actually bills
-   the shipper (carrier/dispatcher invoices already auto-generate on POD
-   approval; this side was deliberately left manual). VAT applies to the
-   rate only, matching computeLoadFinancials — tolls are never included
-   here, they're billed separately via the tolls-sheet endpoint below. */
-router.post('/api/invoices/generate-freight', ({ req, body, sendJson }) => {
-  const user = requireAuth(req, ['shipper']);
-  const { loadIds } = body;
-  if (!Array.isArray(loadIds) || loadIds.length === 0) throw new ApiError(400, 'Select at least one load.');
-  const loads = loadIds.map(id => db.prepare('SELECT * FROM loads WHERE id = ?').get(id));
-  for (const load of loads) {
-    if (!load) throw new ApiError(404, 'One of the selected loads was not found.');
-    if (load.shipper_id !== user.id) throw new ApiError(403, 'One of the selected loads is not yours.');
-    if (load.status !== 'Completed') throw new ApiError(400, `Load ${load.trip_no} isn't completed yet.`);
-    if (!load.rate) throw new ApiError(400, `Load ${load.trip_no} has no rate set.`);
-    if (load.shipper_freight_invoice_id) throw new ApiError(400, `Load ${load.trip_no} is already on a freight invoice.`);
-  }
-  let linehaulTotal = 0, vatTotal = 0;
-  const lineItems = loads.map(load => {
-    const linehaul = load.rate;
-    const vat = Math.round(linehaul * BILLING_RATES.vatPct);
-    linehaulTotal += linehaul; vatTotal += vat;
-    return { loadId: load.id, tripNo: load.trip_no, origin: load.origin, originArea: load.origin_area,
-              dest: load.dest, destArea: load.dest_area, linehaul, vat };
-  });
-  const amount = linehaulTotal + vatTotal;
-  const now = Date.now();
-  const isContract = user.shipper_tier === 'Contract';
-  const dueDate = isContract ? now + 7 * 24 * 60 * 60 * 1000 : now;
-  const id = newId('inv');
-  const invoiceNo = `INV-${Date.now().toString(36).toUpperCase()}-FR`;
-  db.prepare(`
-    INSERT INTO invoices (id, invoice_no, kind, target_user_id, role, party_name, party_phone, party_email, amount,
-                           breakdown_json, included_load_ids_json, payment_terms, issue_date, due_date, status, settlement_status)
-    VALUES (?, ?, 'shipper_freight', ?, 'shipper', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', 'Pending Payment')
-  `).run(id, invoiceNo, user.id, user.name, user.phone, user.email, amount,
-         JSON.stringify({ linehaulTotal, vatTotal, lineItems }), JSON.stringify(loadIds),
-         isContract ? 'Net 7 Bank Transfer (post-POD)' : 'Due immediately', now, dueDate);
-  const update = db.prepare('UPDATE loads SET shipper_freight_invoice_id = ? WHERE id = ?');
-  loadIds.forEach(loadId => update.run(id, loadId));
-  sendJson(201, { invoice: db.prepare('SELECT * FROM invoices WHERE id = ?').get(id) });
-});
-
-/* Tolls are a pass-through reimbursement, never taxed, and deliberately
-   kept off the freight invoice entirely — this is their own, separate
-   sheet, same "shipper picks which completed loads" pattern. */
-router.post('/api/invoices/generate-tolls', ({ req, body, sendJson }) => {
-  const user = requireAuth(req, ['shipper']);
-  const { loadIds } = body;
-  if (!Array.isArray(loadIds) || loadIds.length === 0) throw new ApiError(400, 'Select at least one load.');
-  const loads = loadIds.map(id => db.prepare('SELECT * FROM loads WHERE id = ?').get(id));
-  for (const load of loads) {
-    if (!load) throw new ApiError(404, 'One of the selected loads was not found.');
-    if (load.shipper_id !== user.id) throw new ApiError(403, 'One of the selected loads is not yours.');
-    if (load.status !== 'Completed') throw new ApiError(400, `Load ${load.trip_no} isn't completed yet.`);
-    if (!load.tolls) throw new ApiError(400, `Load ${load.trip_no} has no tolls to reimburse.`);
-    if (load.shipper_tolls_invoice_id) throw new ApiError(400, `Load ${load.trip_no} is already on a tolls sheet.`);
-  }
-  let tollsTotal = 0;
-  const lineItems = loads.map(load => {
-    tollsTotal += load.tolls;
-    return { loadId: load.id, tripNo: load.trip_no, origin: load.origin, originArea: load.origin_area,
-              dest: load.dest, destArea: load.dest_area, tolls: load.tolls };
-  });
-  const now = Date.now();
-  const id = newId('inv');
-  const invoiceNo = `INV-${Date.now().toString(36).toUpperCase()}-TL`;
-  db.prepare(`
-    INSERT INTO invoices (id, invoice_no, kind, target_user_id, role, party_name, party_phone, party_email, amount,
-                           breakdown_json, included_load_ids_json, payment_terms, issue_date, due_date, status, settlement_status)
-    VALUES (?, ?, 'shipper_tolls', ?, 'shipper', ?, ?, ?, ?, ?, ?, 'Due immediately', ?, ?, 'Pending', 'Pending Payment')
-  `).run(id, invoiceNo, user.id, user.name, user.phone, user.email, tollsTotal,
-         JSON.stringify({ tollsTotal, lineItems }), JSON.stringify(loadIds), now, now);
-  const update = db.prepare('UPDATE loads SET shipper_tolls_invoice_id = ? WHERE id = ?');
-  loadIds.forEach(loadId => update.run(id, loadId));
-  sendJson(201, { invoice: db.prepare('SELECT * FROM invoices WHERE id = ?').get(id) });
 });
 
 router.post('/api/loads', ({ req, body, sendJson }) => {
@@ -508,13 +331,6 @@ function computeLoadFinancials(load) {
   return { linehaul, tolls, vat, shipperSubtotal, shipperTotalDue, dispatchFee, platformCommission, carrierNetStandard };
 }
 
-/* Only carrier and dispatcher invoices auto-generate here — the shipper
-   side is deliberately NOT auto-created. This matches the frontend's
-   consolidated-invoicing design: a shipper picks which delivered loads to
-   collect into one invoice themselves, rather than getting one invoice
-   per load automatically. (That "generate consolidated invoice" endpoint
-   doesn't exist yet — this just makes sure POD approval doesn't create a
-   shipper invoice that would conflict with it once it does.) */
 function generateInvoicesForLoad(load, shipperUser) {
   if (load.invoices_generated) {
     return db.prepare('SELECT * FROM invoices WHERE load_id = ?').all(load.id);
@@ -525,9 +341,14 @@ function generateInvoicesForLoad(load, shipperUser) {
   const fin = computeLoadFinancials(load);
   const issueDate = Date.now();
   const payoutDueDate = issueDate + BILLING_RATES.standardPayoutDays * 24 * 60 * 60 * 1000;
+  const isContract = shipperUser.shipper_tier === 'Contract';
+  const shipperDueDate = isContract ? issueDate + 7 * 24 * 60 * 60 * 1000 : issueDate;
   const carrier = load.booked_by_carrier_id ? db.prepare('SELECT * FROM users WHERE id = ?').get(load.booked_by_carrier_id) : null;
 
   const rows = [
+    { role: 'shipper', partyName: shipperUser.name, partyPhone: shipperUser.phone, partyEmail: shipperUser.email,
+      amount: fin.shipperTotalDue, terms: isContract ? 'Net 7 Bank Transfer (post-POD)' : 'Due immediately',
+      dueDate: shipperDueDate, settlementStatus: 'Pending Payment' },
     { role: 'carrier', partyName: carrier ? carrier.name : 'Carrier', partyPhone: carrier ? carrier.phone : null,
       partyEmail: carrier ? carrier.email : null, amount: fin.carrierNetStandard, terms: 'Standard (30 days)',
       dueDate: payoutDueDate, settlementStatus: null },
@@ -552,38 +373,6 @@ function generateInvoicesForLoad(load, shipperUser) {
 }
 
 /* ---------- INVOICES ---------- */
-/* Admin sets a custom platform-access fee for a non-pioneer shipper — no
-   fixed price tiers, admin decides the amount per account. Creates a real
-   invoice the shipper sees and pays exactly like a shipment invoice
-   (InstaPay / bank transfer, upload a receipt, admin confirms). */
-router.post('/api/admin/users/:id/set-fee', ({ req, params, body, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const { amount, note } = body;
-  if (!amount || amount <= 0) throw new ApiError(400, 'A positive amount is required.');
-  const target = db.prepare("SELECT * FROM users WHERE id = ? AND role IN ('shipper','carrier')").get(params.id);
-  if (!target) throw new ApiError(404, 'User not found.');
-  if (target.is_pioneer_shipper) throw new ApiError(400, 'This shipper is a Founding Shipper — free lifetime posting, no fee applies.');
-  // One open platform-fee invoice per account at a time — reuse it rather
-  // than stacking duplicates if the admin sets a new amount before the
-  // old one is settled.
-  const existing = db.prepare(`SELECT * FROM invoices WHERE kind = 'platform_fee' AND target_user_id = ? AND status != 'Paid'`).get(target.id);
-  const now = Date.now();
-  if (existing) {
-    db.prepare(`UPDATE invoices SET amount = ?, breakdown_json = ?, issue_date = ?, settlement_status = 'Pending Payment' WHERE id = ?`)
-      .run(amount, JSON.stringify({note: note||''}), now, existing.id);
-    return sendJson(200, { invoice: db.prepare('SELECT * FROM invoices WHERE id = ?').get(existing.id) });
-  }
-  const id = newId('inv');
-  const invoiceNo = `INV-${Date.now().toString(36).toUpperCase()}-FEE`;
-  db.prepare(`
-    INSERT INTO invoices (id, invoice_no, kind, target_user_id, role, party_name, party_phone, party_email, amount,
-                           breakdown_json, payment_terms, issue_date, due_date, status, settlement_status)
-    VALUES (?, ?, 'platform_fee', ?, ?, ?, ?, ?, ?, ?, 'InstaPay', ?, ?, 'Pending', 'Pending Payment')
-  `).run(id, invoiceNo, target.id, target.role, target.name, target.phone, target.email, amount,
-         JSON.stringify({note: note||''}), now, now + 30*24*60*60*1000);
-  sendJson(201, { invoice: db.prepare('SELECT * FROM invoices WHERE id = ?').get(id) });
-});
-
 router.get('/api/invoices/mine', ({ req, sendJson }) => {
   const user = requireAuth(req);
   let rows;
@@ -592,19 +381,11 @@ router.get('/api/invoices/mine', ({ req, sendJson }) => {
       SELECT i.* FROM invoices i JOIN loads l ON i.load_id = l.id
       WHERE l.shipper_id = ? AND i.role = 'shipper' ORDER BY i.issue_date DESC
     `).all(user.id);
-    // Platform-fee and consolidated freight/tolls invoices all track their
-    // owner via target_user_id (not load_id, since these either aren't
-    // tied to a load at all, or cover several at once) — same column,
-    // same ownership meaning, regardless of which kind of invoice it is.
-    const otherInvoices = db.prepare(`SELECT * FROM invoices WHERE kind IN ('platform_fee','shipper_freight','shipper_tolls') AND target_user_id = ? ORDER BY issue_date DESC`).all(user.id);
-    rows = [...otherInvoices, ...rows];
   } else if (user.role === 'carrier') {
     rows = db.prepare(`
       SELECT i.* FROM invoices i JOIN loads l ON i.load_id = l.id
       WHERE l.booked_by_carrier_id = ? AND i.role IN ('carrier','dispatcher') ORDER BY i.issue_date DESC
     `).all(user.id);
-    const feeInvoices = db.prepare(`SELECT * FROM invoices WHERE kind = 'platform_fee' AND target_user_id = ? ORDER BY issue_date DESC`).all(user.id);
-    rows = [...feeInvoices, ...rows];
   } else {
     rows = db.prepare('SELECT * FROM invoices ORDER BY issue_date DESC').all();
   }
@@ -612,22 +393,13 @@ router.get('/api/invoices/mine', ({ req, sendJson }) => {
 });
 
 router.post('/api/invoices/:id/receipt', ({ req, params, body, sendJson }) => {
-  const user = requireAuth(req, ['shipper', 'carrier']);
+  const user = requireAuth(req, ['shipper']);
   const invoice = db.prepare('SELECT * FROM invoices WHERE id = ?').get(params.id);
   if (!invoice) throw new ApiError(404, 'Invoice not found.');
-  if (invoice.kind === 'platform_fee' || invoice.kind === 'shipper_freight' || invoice.kind === 'shipper_tolls') {
-    // These three all track ownership via target_user_id directly — none
-    // of them are tied to a single load_id (platform fees aren't tied to
-    // a load at all; consolidated freight/tolls cover several loads via
-    // included_load_ids_json instead), so there's no load to look up here.
-    if (invoice.target_user_id !== user.id) throw new ApiError(403, 'Not authorized.');
-  } else {
-    if (user.role !== 'shipper') throw new ApiError(403, 'Not authorized.');
-    const load = db.prepare('SELECT * FROM loads WHERE id = ?').get(invoice.load_id);
-    if (!load || load.shipper_id !== user.id) throw new ApiError(403, 'Not authorized.');
-  }
+  const load = db.prepare('SELECT * FROM loads WHERE id = ?').get(invoice.load_id);
+  if (!load || load.shipper_id !== user.id) throw new ApiError(403, 'Not authorized.');
   const doc = saveDocument({
-    ownerUserId: user.id, loadId: invoice.kind === 'shipment' ? invoice.load_id : null, kind: 'payment_receipt',
+    ownerUserId: user.id, loadId: load.id, kind: 'payment_receipt',
     originalFilename: body.filename, mimeType: body.mimeType, base64Data: body.base64Data
   });
   db.prepare("UPDATE invoices SET settlement_status = 'In Verification', receipt_document_id = ? WHERE id = ?").run(doc.id, invoice.id);
@@ -673,96 +445,15 @@ router.post('/api/admin/users/:id/reject', ({ req, params, body, sendJson }) => 
   sendJson(200, { user: publicUser(db.prepare('SELECT * FROM users WHERE id = ?').get(params.id)) });
 });
 
-/* Suspending doesn't touch any of their data — it blocks login (checked in
-   getSessionUser) and cuts off any session they already have open. This is
-   the safe, reversible way to shut off a bad actor without touching their
-   loads, trucks, or financial history. */
-router.post('/api/admin/users/:id/suspend', ({ req, params, sendJson }) => {
-  const admin = requireAuth(req, ['admin']);
-  const target = db.prepare('SELECT * FROM users WHERE id = ?').get(params.id);
-  if (!target) throw new ApiError(404, 'User not found.');
-  if (target.role === 'admin') throw new ApiError(400, 'Cannot suspend an admin account.');
-  db.prepare("UPDATE users SET account_status = 'SUSPENDED' WHERE id = ?").run(params.id);
-  db.prepare('DELETE FROM sessions WHERE user_id = ?').run(params.id); // kick any active session immediately
-  sendJson(200, { user: publicUser(db.prepare('SELECT * FROM users WHERE id = ?').get(params.id)) });
-});
-
-router.post('/api/admin/users/:id/reactivate', ({ req, params, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const target = db.prepare('SELECT * FROM users WHERE id = ?').get(params.id);
-  if (!target) throw new ApiError(404, 'User not found.');
-  db.prepare("UPDATE users SET account_status = 'ACTIVE' WHERE id = ?").run(params.id);
-  sendJson(200, { user: publicUser(db.prepare('SELECT * FROM users WHERE id = ?').get(params.id)) });
-});
-
-/* A real hard delete — only succeeds for an account with no financial
-   history to protect. Any load/truck with a generated invoice is
-   RESTRICTed from deletion at the database level (see schema.sql), so
-   the cascade this triggers naturally fails rather than silently
-   destroying billing records; the person should suspend instead. */
-router.delete('/api/admin/users/:id', ({ req, params, sendJson }) => {
-  const admin = requireAuth(req, ['admin']);
-  const target = db.prepare('SELECT * FROM users WHERE id = ?').get(params.id);
-  if (!target) throw new ApiError(404, 'User not found.');
-  if (target.role === 'admin') throw new ApiError(400, 'Cannot delete an admin account.');
-  try {
-    db.prepare('DELETE FROM users WHERE id = ?').run(params.id);
-  } catch (e) {
-    throw new ApiError(409, 'This account has financial history (invoiced loads) and cannot be deleted — suspend it instead.');
-  }
-  sendJson(200, { deleted: true, id: params.id });
-});
-
-/* Full profile — every field, not the summary shape the queue/all-loads
-   views use. Admin-only; this is deliberately more detailed than
-   publicUser() shows elsewhere. */
-router.get('/api/admin/users/:id', ({ req, params, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const target = db.prepare('SELECT * FROM users WHERE id = ?').get(params.id);
-  if (!target) throw new ApiError(404, 'User not found.');
-  sendJson(200, { user: publicUser(target) });
-});
-
 router.get('/api/admin/payment-verifications', ({ req, sendJson }) => {
   requireAuth(req, ['admin']);
   const rows = db.prepare("SELECT * FROM invoices WHERE role = 'shipper' AND settlement_status = 'In Verification'").all();
   sendJson(200, { invoices: rows });
 });
 
-/* Every invoice on the platform — shipment and platform-fee alike, any
-   status — for full oversight, not just the ones currently awaiting
-   verification. */
-router.get('/api/admin/invoices', ({ req, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const rows = db.prepare('SELECT * FROM invoices ORDER BY issue_date DESC').all();
-  sendJson(200, { invoices: rows });
-});
-
-/* Manually mark an invoice paid — e.g. a carrier payout confirmed by bank
-   transfer outside the receipt-upload flow. Deliberately does NOT let the
-   amount be edited: invoices stay permanent, accurate records of what was
-   actually agreed (see the immutability trigger in schema.sql) — this
-   only changes payment status, never the figures themselves. */
-router.post('/api/admin/invoices/:id/mark-paid', ({ req, params, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const invoice = db.prepare('SELECT * FROM invoices WHERE id = ?').get(params.id);
-  if (!invoice) throw new ApiError(404, 'Invoice not found.');
-  db.prepare("UPDATE invoices SET status = 'Paid' WHERE id = ?").run(params.id);
-  sendJson(200, { invoice: db.prepare('SELECT * FROM invoices WHERE id = ?').get(params.id) });
-});
-
 router.post('/api/admin/invoices/:id/confirm-settled', ({ req, params, sendJson }) => {
   requireAuth(req, ['admin']);
-  const invoice = db.prepare('SELECT * FROM invoices WHERE id = ?').get(params.id);
-  if (!invoice) throw new ApiError(404, 'Invoice not found.');
   db.prepare("UPDATE invoices SET settlement_status = 'Settled', status = 'Paid' WHERE id = ?").run(params.id);
-  // Confirming a platform-fee payment is what actually activates the
-  // account — this is the real "admin approves the payment" step, not
-  // just a label change.
-  if (invoice.kind === 'platform_fee' && invoice.target_user_id) {
-    const plan = invoice.role === 'carrier' ? 'Pro' : 'Standard';
-    db.prepare("UPDATE users SET verified = 1, plan = ?, verification_status = 'APPROVED' WHERE id = ?").run(plan, invoice.target_user_id);
-  }
   sendJson(200, { invoice: db.prepare('SELECT * FROM invoices WHERE id = ?').get(params.id) });
 });
 
@@ -772,10 +463,8 @@ router.post('/api/admin/invoices/:id/confirm-settled', ({ req, params, sendJson 
 router.get('/api/admin/loads', ({ req, sendJson }) => {
   requireAuth(req, ['admin']);
   const rows = db.prepare(`
-    SELECT l.*, u.name as shipper_name, u.phone as shipper_phone, u.email as shipper_email,
-           bc.email as booked_by_carrier_email
+    SELECT l.*, u.name as shipper_name, u.phone as shipper_phone
     FROM loads l JOIN users u ON l.shipper_id = u.id
-    LEFT JOIN users bc ON l.booked_by_carrier_id = bc.id
     ORDER BY l.posted_at DESC
   `).all();
   sendJson(200, { loads: rows });
@@ -784,310 +473,11 @@ router.get('/api/admin/loads', ({ req, sendJson }) => {
 router.get('/api/admin/trucks', ({ req, sendJson }) => {
   requireAuth(req, ['admin']);
   const rows = db.prepare(`
-    SELECT t.*, u.name as carrier_name, u.phone as carrier_phone, u.email as carrier_email
+    SELECT t.*, u.name as carrier_name, u.phone as carrier_phone
     FROM trucks t JOIN users u ON t.carrier_id = u.id
     ORDER BY t.posted_at DESC
   `).all();
   sendJson(200, { trucks: rows });
-});
-
-/* Removing a load/truck posting directly — e.g. spam, fraud, a duplicate.
-   A load with real invoices already generated is RESTRICTed at the
-   database level (schema.sql), same protection as deleting a user — the
-   attempt fails safely rather than silently destroying billing records. */
-router.delete('/api/admin/loads/:id', ({ req, params, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const load = db.prepare('SELECT * FROM loads WHERE id = ?').get(params.id);
-  if (!load) throw new ApiError(404, 'Load not found.');
-  if (load.shipper_freight_invoice_id || load.shipper_tolls_invoice_id) {
-    // These two FKs use ON DELETE SET NULL (not RESTRICT), since a
-    // consolidated invoice's own recorded figures stay valid even if a
-    // load it covered is later removed — but removing the load anyway
-    // would silently drop it out of that invoice's own record of what it
-    // covered, which is worth refusing explicitly rather than allowing.
-    throw new ApiError(409, 'This load is part of a consolidated invoice and cannot be removed.');
-  }
-  try {
-    db.prepare('DELETE FROM loads WHERE id = ?').run(params.id);
-  } catch (e) {
-    throw new ApiError(409, 'This load has real invoices generated against it and cannot be removed.');
-  }
-  sendJson(200, { deleted: true, id: params.id });
-});
-
-router.delete('/api/admin/trucks/:id', ({ req, params, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const truck = db.prepare('SELECT * FROM trucks WHERE id = ?').get(params.id);
-  if (!truck) throw new ApiError(404, 'Truck not found.');
-  db.prepare('DELETE FROM trucks WHERE id = ?').run(params.id);
-  sendJson(200, { deleted: true, id: params.id });
-});
-
-/* ---------- Negotiations (load offers + truck requests) ---------- */
-
-function negotiationRow(id) {
-  return db.prepare('SELECT * FROM negotiations WHERE id = ?').get(id);
-}
-function requireNegotiationParty(req, neg) {
-  const user = requireAuth(req, ['shipper', 'carrier', 'admin']);
-  if (user.role !== 'admin' && user.id !== neg.shipper_id && user.id !== neg.carrier_id) {
-    throw new ApiError(403, 'Not a party to this negotiation.');
-  }
-  return user;
-}
-
-/* A carrier proposing a rate on a shipper's load, OR a shipper requesting
-   a carrier's truck — same shape either way, just which side initiates
-   differs. Reuses an existing Pending negotiation on the same target
-   rather than creating a duplicate thread if one's already open. */
-router.post('/api/negotiations', ({ req, body, sendJson }) => {
-  const {
-    targetType, targetId, price, note,
-    pickupDate, pickupTimeFrom, pickupTimeTo, deliveryDateFrom, deliveryDateTo,
-    deliveryTimeFrom, deliveryTimeTo, pickupGov, pickupArea, deliveryGov, deliveryArea,
-    cargo, weight, dimensions
-  } = body;
-  if (!['load', 'truck'].includes(targetType)) throw new ApiError(400, 'targetType must be load or truck.');
-  if (!targetId || !price) throw new ApiError(400, 'targetId and price are required.');
-
-  let shipperId, carrierId;
-  if (targetType === 'load') {
-    const user = requireAuth(req, ['carrier']);
-    const load = db.prepare('SELECT * FROM loads WHERE id = ?').get(targetId);
-    if (!load) throw new ApiError(404, 'Load not found.');
-    shipperId = load.shipper_id; carrierId = user.id;
-  } else {
-    const user = requireAuth(req, ['shipper']);
-    const truck = db.prepare('SELECT * FROM trucks WHERE id = ?').get(targetId);
-    if (!truck) throw new ApiError(404, 'Truck not found.');
-    shipperId = user.id; carrierId = truck.carrier_id;
-  }
-
-  const existing = db.prepare(`SELECT * FROM negotiations WHERE target_type = ? AND target_id = ? AND status = 'Pending'`).get(targetType, targetId);
-  const now = Date.now();
-  const initiatorSide = targetType === 'load' ? 'carrier' : 'shipper';
-  const firstOffer = { by: initiatorSide, price, note: note || '', at: now };
-
-  if (existing) {
-    const offers = JSON.parse(existing.offers_json);
-    offers.push(firstOffer);
-    db.prepare(`UPDATE negotiations SET offers_json = ?, declined_by = NULL, updated_at = ? WHERE id = ?`)
-      .run(JSON.stringify(offers), now, existing.id);
-    return sendJson(200, { negotiation: negotiationRow(existing.id) });
-  }
-
-  const id = newId('neg');
-  db.prepare(`
-    INSERT INTO negotiations (id, target_type, target_id, shipper_id, carrier_id, status, offers_json,
-                               pickup_date, pickup_time_from, pickup_time_to, delivery_date_from, delivery_date_to,
-                               delivery_time_from, delivery_time_to, pickup_gov, pickup_area, delivery_gov, delivery_area,
-                               cargo, weight, dimensions, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(id, targetType, targetId, shipperId, carrierId, JSON.stringify([firstOffer]),
-         pickupDate||null, pickupTimeFrom||null, pickupTimeTo||null, deliveryDateFrom||null, deliveryDateTo||null,
-         deliveryTimeFrom||null, deliveryTimeTo||null, pickupGov||null, pickupArea||null, deliveryGov||null, deliveryArea||null,
-         cargo||null, weight||null, dimensions||null, now, now);
-  sendJson(201, { negotiation: negotiationRow(id) });
-});
-
-router.get('/api/negotiations/:targetType/:targetId', ({ req, params, sendJson }) => {
-  const user = requireAuth(req, ['shipper', 'carrier', 'admin']);
-  const neg = db.prepare(`SELECT * FROM negotiations WHERE target_type = ? AND target_id = ? ORDER BY updated_at DESC LIMIT 1`)
-    .get(params.targetType, params.targetId);
-  if (!neg) return sendJson(200, { negotiation: null });
-  if (user.role !== 'admin' && user.id !== neg.shipper_id && user.id !== neg.carrier_id) {
-    return sendJson(200, { negotiation: null }); // don't leak that a negotiation exists to a non-party
-  }
-  sendJson(200, { negotiation: neg });
-});
-
-router.post('/api/negotiations/:id/offers', ({ req, params, body, sendJson }) => {
-  const neg = negotiationRow(params.id);
-  if (!neg) throw new ApiError(404, 'Negotiation not found.');
-  const user = requireNegotiationParty(req, neg);
-  if (neg.status !== 'Pending') throw new ApiError(400, 'This negotiation is no longer open.');
-  const { price, note } = body;
-  if (!price) throw new ApiError(400, 'price is required.');
-  const side = user.id === neg.shipper_id ? 'shipper' : 'carrier';
-  const offers = JSON.parse(neg.offers_json);
-  offers.push({ by: side, price, note: note || '', at: Date.now() });
-  db.prepare(`UPDATE negotiations SET offers_json = ?, declined_by = NULL, updated_at = ? WHERE id = ?`)
-    .run(JSON.stringify(offers), Date.now(), neg.id);
-  sendJson(200, { negotiation: negotiationRow(neg.id) });
-});
-
-router.post('/api/negotiations/:id/decline', ({ req, params, sendJson }) => {
-  const neg = negotiationRow(params.id);
-  if (!neg) throw new ApiError(404, 'Negotiation not found.');
-  const user = requireNegotiationParty(req, neg);
-  if (neg.status !== 'Pending') throw new ApiError(400, 'This negotiation is no longer open.');
-  const side = user.id === neg.shipper_id ? 'shipper' : 'carrier';
-  // Declining doesn't close the thread — it just flags who declined the
-  // latest offer, so the other side sees "declined, propose your own
-  // price" and the negotiation stays open for a counter.
-  db.prepare(`UPDATE negotiations SET declined_by = ?, updated_at = ? WHERE id = ?`).run(side, Date.now(), neg.id);
-  sendJson(200, { negotiation: negotiationRow(neg.id) });
-});
-
-router.post('/api/negotiations/:id/accept', ({ req, params, sendJson }) => {
-  const neg = negotiationRow(params.id);
-  if (!neg) throw new ApiError(404, 'Negotiation not found.');
-  const user = requireNegotiationParty(req, neg);
-  if (neg.status !== 'Pending') throw new ApiError(400, 'This negotiation is no longer open.');
-  const offers = JSON.parse(neg.offers_json);
-  const latestPrice = offers[offers.length - 1].price;
-  const now = Date.now();
-
-  let linkedLoadId = null;
-  if (neg.target_type === 'load') {
-    db.prepare(`UPDATE loads SET status = 'Pending', tracking_stage = 'Booked', booked_by_carrier_id = ? WHERE id = ?`).run(neg.carrier_id, neg.target_id);
-  } else {
-    // Accepting a truck request creates a real, trackable load — mirrors
-    // the frontend's existing "truck deal creates a booked load" behavior.
-    const truck = db.prepare('SELECT * FROM trucks WHERE id = ?').get(neg.target_id);
-    linkedLoadId = newId('l');
-    db.prepare(`
-      INSERT INTO loads (id, shipper_id, origin, origin_area, dest, dest_area, cargo, equip, weight, pickup_date,
-                          pickup_type, payment_terms, rate, status, tracking_stage, booked_by_carrier_id, posted_at, trip_no)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'FCFS', 'Bank Transfer within 7 Days (post-delivery)', ?, 'Pending', 'Booked', ?, ?, ?)
-    `).run(linkedLoadId, neg.shipper_id, neg.pickup_gov, neg.pickup_area, neg.delivery_gov, neg.delivery_area,
-           neg.cargo || 'General cargo', truck.equip, neg.weight || truck.capacity || '', neg.pickup_date,
-           latestPrice, neg.carrier_id, now, tripNo());
-    db.prepare(`UPDATE trucks SET status = 'Pending' WHERE id = ?`).run(neg.target_id);
-  }
-
-  db.prepare(`UPDATE negotiations SET status = 'Accepted', declined_by = NULL, linked_load_id = ?, updated_at = ? WHERE id = ?`)
-    .run(linkedLoadId, now, neg.id);
-  sendJson(200, { negotiation: negotiationRow(neg.id), linkedLoadId });
-});
-
-/* All of the current user's negotiations in one call — shipper or carrier
-   side — so the Chat tab can show real, fresh threads the moment it's
-   opened, not just after visiting a detail panel that happened to sync
-   that one specific negotiation. */
-router.get('/api/negotiations/mine', ({ req, sendJson }) => {
-  const user = requireAuth(req, ['shipper', 'carrier']);
-  const col = user.role === 'shipper' ? 'shipper_id' : 'carrier_id';
-  const rows = db.prepare(`SELECT * FROM negotiations WHERE ${col} = ? ORDER BY updated_at DESC`).all(user.id);
-  sendJson(200, { negotiations: rows });
-});
-
-/* Full oversight — every negotiation on the platform, both parties named,
-   for the admin to review or step into a stuck one. */
-router.get('/api/admin/negotiations', ({ req, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const rows = db.prepare(`
-    SELECT n.*, s.name as shipper_name, s.email as shipper_email, c.name as carrier_name, c.email as carrier_email
-    FROM negotiations n
-    JOIN users s ON n.shipper_id = s.id
-    JOIN users c ON n.carrier_id = c.id
-    ORDER BY n.updated_at DESC
-  `).all();
-  sendJson(200, { negotiations: rows });
-});
-
-/* Force-closes a negotiation that's stuck — e.g. one side has gone quiet
-   for days and the other wants to move on. Doesn't touch the load/truck's
-   own status (that's a separate, deliberate admin action if needed);
-   this just ends the back-and-forth itself. */
-router.post('/api/admin/negotiations/:id/cancel', ({ req, params, sendJson }) => {
-  requireAuth(req, ['admin']);
-  const neg = db.prepare('SELECT * FROM negotiations WHERE id = ?').get(params.id);
-  if (!neg) throw new ApiError(404, 'Negotiation not found.');
-  if (neg.status !== 'Pending') throw new ApiError(400, 'This negotiation is already closed.');
-  db.prepare(`UPDATE negotiations SET status = 'Declined', declined_by = 'shipper', updated_at = ? WHERE id = ?`).run(Date.now(), params.id);
-  sendJson(200, { negotiation: db.prepare('SELECT * FROM negotiations WHERE id = ?').get(params.id) });
-});
-
-/* ---------- DRIVERS (a carrier's own roster, not platform accounts) ---------- */
-router.post('/api/drivers', ({ req, body, sendJson }) => {
-  const user = requireAuth(req, ['carrier']);
-  const { name, phone } = body;
-  if (!name) throw new ApiError(400, 'A driver name is required.');
-  const id = newId('drv');
-  db.prepare('INSERT INTO drivers (id, carrier_id, name, phone, active, created_at) VALUES (?, ?, ?, ?, 1, ?)')
-    .run(id, user.id, name, phone || null, Date.now());
-  sendJson(201, { driver: db.prepare('SELECT * FROM drivers WHERE id = ?').get(id) });
-});
-
-router.get('/api/drivers/mine', ({ req, sendJson }) => {
-  const user = requireAuth(req, ['carrier']);
-  const rows = db.prepare('SELECT * FROM drivers WHERE carrier_id = ? ORDER BY active DESC, name ASC').all(user.id);
-  sendJson(200, { drivers: rows });
-});
-
-router.patch('/api/drivers/:id', ({ req, params, body, sendJson }) => {
-  const user = requireAuth(req, ['carrier']);
-  const driver = db.prepare('SELECT * FROM drivers WHERE id = ?').get(params.id);
-  if (!driver || driver.carrier_id !== user.id) throw new ApiError(404, 'Driver not found.');
-  const name = body.name !== undefined ? body.name : driver.name;
-  const phone = body.phone !== undefined ? body.phone : driver.phone;
-  const active = body.active !== undefined ? (body.active ? 1 : 0) : driver.active;
-  db.prepare('UPDATE drivers SET name = ?, phone = ?, active = ? WHERE id = ?').run(name, phone, active, params.id);
-  sendJson(200, { driver: db.prepare('SELECT * FROM drivers WHERE id = ?').get(params.id) });
-});
-
-/* ---------- CARRIER SHIPMENTS (off-platform loads a carrier logs themselves) ---------- */
-router.post('/api/carrier-shipments', ({ req, body, sendJson }) => {
-  const user = requireAuth(req, ['carrier']);
-  const { shipperName, shipperPhone, shipperEmail, origin, originArea, dest, destArea, cargo, weight,
-          pickupDate, rate, driverId, advanceAmount } = body;
-  if (!shipperName) throw new ApiError(400, 'A shipper/factory name is required.');
-  if (!origin || !dest) throw new ApiError(400, 'Origin and destination are required.');
-  if (driverId) {
-    const driver = db.prepare('SELECT * FROM drivers WHERE id = ?').get(driverId);
-    if (!driver || driver.carrier_id !== user.id) throw new ApiError(400, 'That driver was not found.');
-  }
-  const id = newId('cs');
-  const now = Date.now();
-  db.prepare(`
-    INSERT INTO carrier_shipments (id, carrier_id, driver_id, shipper_name, shipper_phone, shipper_email,
-                                    origin, origin_area, dest, dest_area, cargo, weight, pickup_date,
-                                    rate, advance_amount, status, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Assigned', ?)
-  `).run(id, user.id, driverId || null, shipperName, shipperPhone || null, shipperEmail || null,
-         origin, originArea || null, dest, destArea || null, cargo || null, weight || null, pickupDate || null,
-         rate || null, advanceAmount || 0, now);
-  sendJson(201, { shipment: db.prepare('SELECT * FROM carrier_shipments WHERE id = ?').get(id) });
-});
-
-router.get('/api/carrier-shipments/mine', ({ req, sendJson }) => {
-  const user = requireAuth(req, ['carrier']);
-  const rows = db.prepare(`
-    SELECT cs.*, d.name as driver_name, d.phone as driver_phone
-    FROM carrier_shipments cs LEFT JOIN drivers d ON cs.driver_id = d.id
-    WHERE cs.carrier_id = ? ORDER BY cs.created_at DESC
-  `).all(user.id);
-  // The driver reconciliation math — advance handed out vs. what was
-  // actually spent on tolls — computed here rather than trusted from the
-  // client, same principle as every other financial figure in this app.
-  rows.forEach(r => {
-    r.driver_balance = r.actual_tolls !== null ? r.advance_amount - r.actual_tolls : null;
-  });
-  sendJson(200, { shipments: rows });
-});
-
-router.patch('/api/carrier-shipments/:id', ({ req, params, body, sendJson }) => {
-  const user = requireAuth(req, ['carrier']);
-  const shipment = db.prepare('SELECT * FROM carrier_shipments WHERE id = ?').get(params.id);
-  if (!shipment || shipment.carrier_id !== user.id) throw new ApiError(404, 'Shipment not found.');
-  const fields = [];
-  const values = [];
-  if (body.driverId !== undefined) { fields.push('driver_id = ?'); values.push(body.driverId || null); }
-  if (body.status !== undefined) {
-    if (!['Assigned','In Transit','Delivered','Settled'].includes(body.status)) throw new ApiError(400, 'Invalid status.');
-    fields.push('status = ?'); values.push(body.status);
-    if (body.status === 'Delivered' && !shipment.delivered_at) { fields.push('delivered_at = ?'); values.push(Date.now()); }
-    if (body.status === 'Settled' && !shipment.settled_at) { fields.push('settled_at = ?'); values.push(Date.now()); }
-  }
-  if (body.actualTolls !== undefined) { fields.push('actual_tolls = ?'); values.push(body.actualTolls); }
-  if (body.rate !== undefined) { fields.push('rate = ?'); values.push(body.rate); }
-  if (fields.length === 0) throw new ApiError(400, 'Nothing to update.');
-  values.push(params.id);
-  db.prepare(`UPDATE carrier_shipments SET ${fields.join(', ')} WHERE id = ?`).run(...values);
-  const updated = db.prepare('SELECT * FROM carrier_shipments WHERE id = ?').get(params.id);
-  if (updated.actual_tolls !== null) updated.driver_balance = updated.advance_amount - updated.actual_tolls;
-  sendJson(200, { shipment: updated });
 });
 
 /* ---------- health check ---------- */
@@ -1119,23 +509,18 @@ function serveStatic(req, res) {
   const filePath = path.join(PUBLIC_DIR, urlPath);
   // Guard against path traversal outside the public directory.
   if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403); return res.end('Forbidden'); }
-  // No caching at all for the app shell — this is a single-page app
-  // whose only "static asset" IS the page itself, so a stale cached copy
-  // (browser or any proxy in between) means real code changes silently
-  // don't show up after a deploy, with no error to explain why.
-  const noCacheHeaders = { 'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0', 'Pragma': 'no-cache' };
   fs.readFile(filePath, (err, data) => {
     if (err) {
       // Not a real static asset — fall back to index.html so client-side
       // navigation/anchors still land on the app itself.
       return fs.readFile(path.join(PUBLIC_DIR, 'index.html'), (err2, indexData) => {
         if (err2) { res.writeHead(404); return res.end('Not found'); }
-        res.writeHead(200, { 'Content-Type': 'text/html', ...noCacheHeaders });
+        res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(indexData);
       });
     }
     const ext = path.extname(filePath);
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', ...noCacheHeaders });
+    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
     res.end(data);
   });
 }

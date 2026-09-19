@@ -29,7 +29,6 @@ const { chromium } = require('playwright');
     await page1.selectOption('#lDest', 'Luxor');
     await page1.fill('#lWeight', '5 tons');
     await page1.fill('#lPickup', '2028-07-01');
-    await page1.fill('#lCargo', 'Test cargo description');
     await page1.fill('#lRate', '21000');
     await page1.click('#loadFormSubmit');
     await page1.waitForTimeout(500);
